@@ -1,0 +1,25 @@
+language: elixir
+
+sudo: false
+
+elixir:
+  - 1.7
+
+otp_release:
+  - 20.3
+  - 21.2
+
+cache:
+  directories:
+    - _build
+    - deps
+
+env: MIX_ENV=test
+
+script:
+  - mix coveralls.travis
+  - mix credo
+  - mix format --check-formatted
+
+after_script:
+  - mix inch.report

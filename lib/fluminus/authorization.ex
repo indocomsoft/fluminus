@@ -48,6 +48,7 @@ defmodule Fluminus.Authorization do
 
       {:ok, %__MODULE__{auth | cookies: %{"idsrv" => auth.cookies["idsrv"]}, jwt: id_token}}
     else
+      {:ok, _, %{status_code: 200}} -> {:error, :invalid_credentials}
       {:error, error} -> {:error, error}
     end
   end
@@ -94,7 +95,9 @@ defmodule Fluminus.Authorization do
        when method in [:get, :post] and is_binary(url) and is_binary(body) and is_map(headers) do
     headers = Map.put(headers, "Cookie", cookies_string(authorization))
 
-    case HTTPoison.request(method, url, body, headers) do
+    # Increase timeout to 10s because LumiNUS authorization takes a long time
+    # if the username format does not follow e0123456
+    case HTTPoison.request(method, url, body, headers, recv_timeout: 10_000) do
       {:ok, response = %HTTPoison.Response{headers: headers}} ->
         headers = Map.new(headers)
         raw_cookie = Map.get(headers, "Set-Cookie")

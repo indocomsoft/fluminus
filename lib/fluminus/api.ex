@@ -48,7 +48,7 @@ defmodule Fluminus.API do
 
   ## Example
 
-      iex> Fluminus.API.jwt(authorization, "/user/Profile")
+      iex> Fluminus.API.api(authorization, "/user/Profile")
       {:ok,
        %{
          "displayPhoto" => true,

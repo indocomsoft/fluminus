@@ -46,7 +46,9 @@ defmodule Fluminus.Authorization do
       %{fragment: fragment} = URI.parse(location)
       %{"id_token" => id_token} = URI.decode_query(fragment)
 
-      {:ok, %__MODULE__{auth | cookies: %{"idsrv" => auth.cookies["idsrv"]}, jwt: id_token}}
+      # To refresh the JWT, only `idsrv` cookie is checked by the server
+      cookies = %{"idsrv" => auth.cookies["idsrv"]}
+      {:ok, %__MODULE__{auth | cookies: cookies, jwt: id_token}}
     else
       {:ok, _, %{status_code: 200}} -> {:error, :invalid_credentials}
       {:error, error} -> {:error, error}

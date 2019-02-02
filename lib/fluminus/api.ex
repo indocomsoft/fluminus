@@ -8,8 +8,8 @@ defmodule Fluminus.API do
   @api_base_url "https://luminus.azure-api.net"
   @ocm_apim_subscription_key "6963c200ca9440de8fa1eede730d8f7e"
 
-  alias Fluminus.Authorization
   alias Fluminus.API.Module
+  alias Fluminus.Authorization
 
   @doc """
   Returns the name of the user with the given authorization.

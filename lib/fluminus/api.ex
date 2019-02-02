@@ -9,6 +9,7 @@ defmodule Fluminus.API do
   @ocm_apim_subscription_key "6963c200ca9440de8fa1eede730d8f7e"
 
   alias Fluminus.Authorization
+  alias Fluminus.API.Module
 
   @doc """
   Returns the name of the user with the given authorization.
@@ -30,6 +31,16 @@ defmodule Fluminus.API do
     |> String.split()
     |> Enum.map(&String.capitalize/1)
     |> Enum.join(" ")
+  end
+
+  @doc """
+  Returns the modules that the user with the given authorization is taking.
+  """
+  @spec modules(%Authorization{}) :: [%Module{}]
+  def modules(auth = %Authorization{}) do
+    {:ok, %{"data" => data}} = api(auth, "/module")
+
+    Enum.map(data, &Module.from_api/1)
   end
 
   @doc """

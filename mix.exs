@@ -28,6 +28,8 @@ defmodule Fluminus.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:floki, "~> 0.20.0"},
+      {:html_entities, "~> 0.4"},
       {:httpoison, "~> 1.4"},
       {:jason, "~> 1.1"},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},

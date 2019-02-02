@@ -19,7 +19,7 @@ defmodule Fluminus.API.Module do
       id: map["id"],
       code: map["name"],
       name: map["courseName"],
-      teaching?: @teacher_access |> Enum.any?(&map["access"][&1])
+      teaching?: Enum.any?(@teacher_access, &map["access"][&1])
     }
   end
 end

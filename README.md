@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.com/indocomsoft/fluminus.svg?branch=master)](https://travis-ci.com/indocomsoft/fluminus)
 [![Coverage Status](https://coveralls.io/repos/github/indocomsoft/fluminus/badge.svg?branch=master)](https://coveralls.io/github/indocomsoft/fluminus?branch=master)
-[![Inline docs](http://inch-ci.org/github/indocomsoft/fluminus.svg?branch=HEAD)](http://inch-ci.org/github/indocomsoft/fluminus)
 
 Warning: this is still a work-in-progress.
 

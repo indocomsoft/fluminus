@@ -20,6 +20,3 @@ script:
   - mix coveralls.travis
   - mix credo
   - mix format --check-formatted
-
-after_script:
-  - mix inch.report

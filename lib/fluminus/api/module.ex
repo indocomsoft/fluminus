@@ -13,6 +13,9 @@ defmodule Fluminus.API.Module do
   @enforce_keys [:id, :code, :name, :teaching?, :term]
   defstruct [:id, :code, :name, :teaching?, :term]
 
+  @doc """
+  Creates `#{__MODULE__}` struct from LumiNUS API response.
+  """
   @spec from_api(map()) :: %__MODULE__{}
   def from_api(map) when is_map(map) do
     %__MODULE__{

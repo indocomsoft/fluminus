@@ -2,6 +2,10 @@ defmodule Fluminus.Authorization do
   @moduledoc """
   Provides an abstraction over the OpenID Connect flow authorization process as
   used by LumiNUS
+
+  Struct fields:
+  * `:cookies` - cookies that needs to be sent to the server
+  * `:jwt` - contains the JWT to be used for authorization to the server
   """
 
   @auth_base_uri "https://luminus.nus.edu.sg"
@@ -11,12 +15,6 @@ defmodule Fluminus.Authorization do
   @response_type "id_token token code"
   @redirect_uri "https://luminus.nus.edu.sg/auth/callback"
 
-  @doc """
-  Defines an Authorization struct
-
-  * :cookies - cookies that needs to be sent to the server
-  * :jwt - contains the JWT to be used for authorization to the server
-  """
   @type t :: %__MODULE__{cookies: %{required(String.t()) => String.t()}, jwt: String.t() | nil}
   defstruct cookies: %{}, jwt: nil
 

@@ -33,6 +33,14 @@ defmodule Fluminus.API do
     |> Enum.join(" ")
   end
 
+  @doc """
+  Returns a tuple of {current_term, human_readable_term_description}.
+
+  ## Example
+
+      iex> Fluminus.API.current_term(auth)
+      {"1820", "2018/2019 Semester 2"}
+  """
   @spec current_term(%Authorization{}) :: {String.t(), String.t()}
   def current_term(auth = %Authorization{}) do
     {:ok, %{"termDetail" => %{"term" => term, "description" => description}}} =

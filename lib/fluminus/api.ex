@@ -35,7 +35,8 @@ defmodule Fluminus.API do
 
   @spec current_term(%Authorization{}) :: {String.t(), String.t()}
   def current_term(auth = %Authorization{}) do
-    {:ok, %{"termDetail" => %{"term" => term, "description" => description}}} = api(auth, "/setting/AcademicWeek/current?populate=termDetail")
+    {:ok, %{"termDetail" => %{"term" => term, "description" => description}}} =
+      api(auth, "/setting/AcademicWeek/current?populate=termDetail")
 
     {term, description}
   end
@@ -99,7 +100,7 @@ defmodule Fluminus.API do
 
     if current_term_only do
       {term, _} = current_term(auth)
-      Enum.filter(mods, & &1.term == term)
+      Enum.filter(mods, &(&1.term == term))
     else
       mods
     end
@@ -123,6 +124,8 @@ defmodule Fluminus.API do
          "userNameOriginal" => "JOHN SMITH"
        }}
   """
+  @spec api(%Authorization{}, String.t(), :get | :post, String.t(), %{required(String.t()) => String.t()}) ::
+          {:ok, map()} | {:error, :expired_token} | {:error, {:unexpected_content, any()}} | {:error, any()}
   def api(auth = %Authorization{}, path, method \\ :get, body \\ "", headers \\ %{}) when method in [:get, :post] do
     headers =
       headers
@@ -136,6 +139,7 @@ defmodule Fluminus.API do
 
     case HTTPoison.request(method, uri, body, headers) do
       {:ok, %{status_code: 200, body: body}} -> Jason.decode(body)
+      {:ok, %{status_code: 401}} -> {:error, :expired_token}
       {:ok, response} -> {:error, {:unexpected_content, response}}
       {:error, error} -> {:error, error}
     end

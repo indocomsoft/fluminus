@@ -43,19 +43,41 @@ defmodule Fluminus.Authorization do
          body <- xsrf |> Map.merge(%{"username" => username, "password" => password}) |> URI.encode_query(),
          {:ok, auth, %{status_code: 302, headers: %{"Location" => location}}} <- http_post(auth, login_uri, body),
          {:ok, auth, %{status_code: 302, headers: %{"Location" => location}}} <- http_get(auth, location) do
-      %{fragment: fragment} = URI.parse(location)
-      %{"id_token" => id_token} = URI.decode_query(fragment)
-
-      # To refresh the JWT, only `idsrv` cookie is checked by the server
-      cookies = %{"idsrv" => auth.cookies["idsrv"]}
-      {:ok, %__MODULE__{auth | cookies: cookies, jwt: id_token}}
+      handle_callback(auth, location)
     else
       {:ok, _, %{status_code: 200}} -> {:error, :invalid_credentials}
       {:error, error} -> {:error, error}
     end
   end
 
-  @spec auth_login_info :: {:ok, %__MODULE__{}, String.t(), map()} | {:error, any()}
+  @spec renew_jwt(%__MODULE__{}) :: {:ok, %__MODULE__{}} | {:error, :invalid_authorization} | {:error, any()}
+  def renew_jwt(auth = %__MODULE__{}) do
+    with {:ok, auth_uri} <- auth_endpoint_uri(),
+         {:ok, auth, %{status_code: 302, headers: %{"Location" => location}}} <- http_get(auth, auth_uri),
+         {:ok, auth} <- handle_callback(auth, location) do
+      auth
+    else
+      {:error, :invalid_callback} -> {:error, :invalid_authorization}
+      {:error, error} -> {:error, error}
+    end
+  end
+
+  @spec handle_callback(%__MODULE__{}, String.t()) :: {:ok, %__MODULE__{}}
+  defp handle_callback(auth = %__MODULE__{}, location) when is_binary(location) do
+    case URI.parse(location) do
+      %{fragment: nil} ->
+        {:error, :invalid_callback}
+
+      %{fragment: fragment} ->
+        %{"id_token" => id_token} = URI.decode_query(fragment)
+
+        # To refresh the JWT, only `idsrv` cookie is checked by the server
+        cookies = %{"idsrv" => auth.cookies["idsrv"]}
+        {:ok, %__MODULE__{auth | cookies: cookies, jwt: id_token}}
+    end
+  end
+
+  @spec auth_login_info :: {:ok, %__MODULE__{}, String.t(), map()} | {:error, :floki} | {:error, any()}
   defp auth_login_info do
     with {:ok, auth_uri} <- auth_endpoint_uri(),
          {:ok, auth, %{status_code: 302, headers: %{"Location" => location}}} <- http_get(%__MODULE__{}, auth_uri),
@@ -67,7 +89,7 @@ defmodule Fluminus.Authorization do
 
       {:ok, auth, full_login_uri, xsrf}
     else
-      {:floki, _} -> {:error, {:floki, :no_match}}
+      {:floki, _} -> {:error, :floki}
       {:error, error} -> {:error, error}
     end
   end

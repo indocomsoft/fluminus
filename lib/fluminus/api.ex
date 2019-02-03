@@ -19,8 +19,8 @@ defmodule Fluminus.API do
 
   ## Example
 
-    iex> Fluminus.API.name(authentication)
-    "John Smith"
+      iex> Fluminus.API.name(auth)
+      "John Smith"
   """
   @spec name(%Authorization{}) :: String.t()
   def name(auth = %Authorization{}) do
@@ -33,14 +33,76 @@ defmodule Fluminus.API do
     |> Enum.join(" ")
   end
 
+  @spec current_term(%Authorization{}) :: {String.t(), String.t()}
+  def current_term(auth = %Authorization{}) do
+    {:ok, %{"termDetail" => %{"term" => term, "description" => description}}} = api(auth, "/setting/AcademicWeek/current?populate=termDetail")
+
+    {term, description}
+  end
+
   @doc """
   Returns the modules that the user with the given authorization is taking.
+
+  * `current_term_only` - if `true`, will only return modules that the user is currently taking this semester.
+  Otherwise, return all modules that are still in the LumiNUS system.
+
+  ## Examples
+
+      iex> Fluminus.API.modules(auth)
+      [
+        %Fluminus.API.Module{
+          code: "CS2100",
+          id: "063773a9-43ac-4dc0-bdc6-4be2f5b50300",
+          name: "Computer Organisation",
+          teaching?: true,
+          term: "1820"
+        },
+        %Fluminus.API.Module{
+          code: "ST2334",
+          id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
+          name: "Probability and Statistics",
+          teaching?: false,
+          term: "1820"
+        },
+        %Fluminus.API.Module{
+          code: "CS1101S",
+          id: "8722e9a5-abc5-4160-820d-bf69d8a63c6f",
+          name: "Programming Methodology",
+          teaching?: true,
+          term: "1810"
+        }
+      ]
+
+      iex> Fluminus.API.modules(auth, true)
+      [
+        %Fluminus.API.Module{
+          code: "CS2100",
+          id: "063773a9-43ac-4dc0-bdc6-4be2f5b50300",
+          name: "Computer Organisation",
+          teaching?: true,
+          term: "1820"
+        },
+        %Fluminus.API.Module{
+          code: "ST2334",
+          id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
+          name: "Probability and Statistics",
+          teaching?: false,
+          term: "1820"
+        }
+      ]
   """
   @spec modules(%Authorization{}) :: [%Module{}]
-  def modules(auth = %Authorization{}) do
+  def modules(auth = %Authorization{}, current_term_only \\ false) do
     {:ok, %{"data" => data}} = api(auth, "/module")
 
-    Enum.map(data, &Module.from_api/1)
+    mods = Enum.map(data, &Module.from_api/1)
+
+    if current_term_only do
+      {term, _} = current_term(auth)
+      Enum.filter(mods, & &1.term == term)
+    else
+      mods
+    end
   end
 
   @doc """

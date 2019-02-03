@@ -10,8 +10,8 @@ defmodule Fluminus.API.Module do
   Provides information regarding a module in LumiNUS.
   """
   @type t :: %__MODULE__{id: String.t(), code: String.t(), name: String.t(), teaching?: bool()}
-  @enforce_keys [:id, :code, :name, :teaching?]
-  defstruct [:id, :code, :name, :teaching?]
+  @enforce_keys [:id, :code, :name, :teaching?, :term]
+  defstruct [:id, :code, :name, :teaching?, :term]
 
   @spec from_api(map()) :: %__MODULE__{}
   def from_api(map) when is_map(map) do
@@ -19,7 +19,8 @@ defmodule Fluminus.API.Module do
       id: map["id"],
       code: map["name"],
       name: map["courseName"],
-      teaching?: Enum.any?(@teacher_access, &map["access"][&1])
+      teaching?: Enum.any?(@teacher_access, &map["access"][&1]),
+      term: map["term"]
     }
   end
 end

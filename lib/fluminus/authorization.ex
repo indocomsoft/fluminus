@@ -64,7 +64,7 @@ defmodule Fluminus.Authorization do
          jwt: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSIsImtpZCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSJ9.eyJpc3MiOiJodHRwczovL2x1bWludXMubnVzLmVkdS5zZy92Mi9hdXRoIiwiYXVkIjoidmVyc28iLCJleHAiOjE1NDkxMDkzNjQsIm5iZiI6MTu0OTEwOTA2NCwibm9uY2UiOiI1NjlaY2VlMDM1MzdjNjQ2ZmU2MmE1MjIzOGFlN2E3ZiIsImlhdCI6MTU0OTEwOTA2NCwiYXRfaGFzaCI6ImZxWWFlLWRNaWRJNGIxZTJSMUVUUkEiLCJjX2hhc2giOiIxSkI3M1BheFVmTUROZVoybmZFcGd3Iiwic3ViIjoiMDMwODkyNTItMGM5Ni00ZmFiLWIwODAaZjJhZWIwN2VlYjBmIiwiYXV0aF90aW1lIjoxNTQ5MTA5MDY0LCJpZHAiOiJpZHNydiIsImFkZHJlc3MiOiJSZXF1ZXN0IGFsbCBjbGFpbXMiLCJhbXIiOlsicGFzc3dvcmQiXX0.NKmxw6ipXr6H2aD2cdoBiMvch9FCmeYAdtsHjYoGerhiaBdoxJ-um8P-0ThEouF4P6YYmltMSsNo9tWFNWOIhY9anU1TgTdYaYCqx5w8N9aAemRF9-PjTZMPCRCnk1xVyI3q06C_uinNJQ00So1lcA9rneWBJJecZwgwKht7EvsUiEUjXso1LgiBxO9LPOcrA47PaMti-228nN6EsxEx7Zpl8bLpQLDWX8XN8N2IKYoyo8nlQKThgziotgKXYJO22Z2DYImGTB46X2u2MfscSAedjzEhssJwVre5w2zztAAgU7E2mSif6V7jC42W7OmKQmi79_N10OAxxMUqUc7c0Q"
        }}
   """
-  @spec renew_jwt(%__MODULE__{}) :: {:ok, __MODULE__.t()} | {:error, :invalid_authorization} | {:error, any()}
+  @spec renew_jwt(__MODULE__.t()) :: {:ok, __MODULE__.t()} | {:error, :invalid_authorization} | {:error, any()}
   def renew_jwt(auth = %__MODULE__{}) do
     with {:ok, auth_uri} <- auth_endpoint_uri(),
          {:ok, auth, %{status_code: 302, headers: %{"Location" => location}}} <- http_get(auth, auth_uri),

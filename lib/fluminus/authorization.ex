@@ -22,11 +22,12 @@ defmodule Fluminus.Authorization do
 
   @doc """
   Obtains a `#{__MODULE__}` struct containing JWT required for authorization and cookies to refresh JWT.
+  Please note that the JWT is usually only valid for 1 hour, and the cookies for 24 hours.
 
   `username` is the username of your NUSNET account (in the format of e0123456).
   `password` is the password of your NUSNET account.
 
-  ## Example
+  ## Examples
 
       iex> Fluminus.Authorization.jwt("e0123456", "hunter2")
       {:ok,
@@ -37,7 +38,7 @@ defmodule Fluminus.Authorization do
          jwt: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSIsImtpZCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSJ9.eyJpc3MiOiJodHRwczovL2x1bWludXMubnVzLmVkdS5zZy92Mi9hdXRoIiwiYXVkIjoidmVyc28iLCJleHAiOjE1NDkxMDkzNjQsIm5iZiI6MTu0OTEwOTA2NCwibm9uY2UiOiI1NjlaY2VlMDM1MzdjNjQ2ZmU2MmE1MjIzOGFlN2E3ZiIsImlhdCI6MTU0OTEwOTA2NCwiYXRfaGFzaCI6ImZxWWFlLWRNaWRJNGIxZTJSMUVUUkEiLCJjX2hhc2giOiIxSkI3M1BheFVmTUROZVoybmZFcGd3Iiwic3ViIjoiMDMwODkyNTItMGM5Ni00ZmFiLWIwODAaZjJhZWIwN2VlYjBmIiwiYXV0aF90aW1lIjoxNTQ5MTA5MDY0LCJpZHAiOiJpZHNydiIsImFkZHJlc3MiOiJSZXF1ZXN0IGFsbCBjbGFpbXMiLCJhbXIiOlsicGFzc3dvcmQiXX0.NKmxw6ipXr6H2aD2cdoBiMvch9FCmeYAdtsHjYoGerhiaBdoxJ-um8P-0ThEouF4P6YYmltMSsNo9tWFNWOIhY9anU1TgTdYaYCqx5w8N9aAemRF9-PjTZMPCRCnk1xVyI3q06C_uinNJQ00So1lcA9rneWBJJecZwgwKht7EvsUiEUjXso1LgiBxO9LPOcrA47PaMti-228nN6EsxEx7Zpl8bLpQLDWX8XN8N2IKYoyo8nlQKThgziotgKXYJO22Z2DYImGTB46X2u2MfscSAedjzEhssJwVre5w2zztAAgU7E2mSif6V7jC42W7OmKQmi79_N10OAxxMUqUc7c0Q"
        }}
   """
-  @spec jwt(String.t(), String.t()) :: {:ok, %__MODULE__{}} | {:error, :invalid_credentials} | {:error, any()}
+  @spec jwt(String.t(), String.t()) :: {:ok, __MODULE__.t()} | {:error, :invalid_credentials} | {:error, any()}
   def jwt(username, password) when is_binary(username) and is_binary(password) do
     with {:ok, auth, login_uri, xsrf} <- auth_login_info(),
          body <- xsrf |> Map.merge(%{"username" => username, "password" => password}) |> URI.encode_query(),
@@ -50,7 +51,22 @@ defmodule Fluminus.Authorization do
     end
   end
 
-  @spec renew_jwt(%__MODULE__{}) :: {:ok, %__MODULE__{}} | {:error, :invalid_authorization} | {:error, any()}
+  @doc """
+  Renews the JWT of a `#{__MODULE__}` struct containing expired token using the cookies inside the struct.
+  Please note that the cookie is only valid for 24 hours.
+
+  ## Examples
+
+      iex> Fluminus.Authorization.renew_jwt(auth)
+      {:ok,
+       %Fluminus.Authorization{
+         cookies: %{
+           "idsrv" => "Fnl_dY2mhtVU9nyZLb93vpU9I4eZVcWyhrnwBwCkkbrtjBsUFTGVr6JQk_x1DbdsieBzzoxqzVnrQ-dUCwqRD-dKkA1ixFnCggcX_PMcrIzr4PiZj35Z2LpVkMuWSju2BrLOJgpqCO0FFFv3uSX4Ll_jnEgPrptkHPnm6yxHls_oobhn_29Itf--NGWmWdzytx7hOktHBkeBRYhljrUHxqkGtYD2lRngMYBLBLHnTwYnu8ALRVu1oqyeEmEjQbh0pUdDCaLsnIvrFKKVQuB0Fh1z3awLUWJ8awomebTmgE5VeA68RLxy1y3J7rAJCW2IQz4WTpF1lowUry_W3UfIqUbYGcPqcdITcO2FrF6iXmxCaRWsuh07b41dQLYS04o9PRI_Q_gZYRdXroCrd_VPHdLzWi9eOnZ9fHCiG5fj1Do"
+         },
+         jwt: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSIsImtpZCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSJ9.eyJpc3MiOiJodHRwczovL2x1bWludXMubnVzLmVkdS5zZy92Mi9hdXRoIiwiYXVkIjoidmVyc28iLCJleHAiOjE1NDkxMDkzNjQsIm5iZiI6MTu0OTEwOTA2NCwibm9uY2UiOiI1NjlaY2VlMDM1MzdjNjQ2ZmU2MmE1MjIzOGFlN2E3ZiIsImlhdCI6MTU0OTEwOTA2NCwiYXRfaGFzaCI6ImZxWWFlLWRNaWRJNGIxZTJSMUVUUkEiLCJjX2hhc2giOiIxSkI3M1BheFVmTUROZVoybmZFcGd3Iiwic3ViIjoiMDMwODkyNTItMGM5Ni00ZmFiLWIwODAaZjJhZWIwN2VlYjBmIiwiYXV0aF90aW1lIjoxNTQ5MTA5MDY0LCJpZHAiOiJpZHNydiIsImFkZHJlc3MiOiJSZXF1ZXN0IGFsbCBjbGFpbXMiLCJhbXIiOlsicGFzc3dvcmQiXX0.NKmxw6ipXr6H2aD2cdoBiMvch9FCmeYAdtsHjYoGerhiaBdoxJ-um8P-0ThEouF4P6YYmltMSsNo9tWFNWOIhY9anU1TgTdYaYCqx5w8N9aAemRF9-PjTZMPCRCnk1xVyI3q06C_uinNJQ00So1lcA9rneWBJJecZwgwKht7EvsUiEUjXso1LgiBxO9LPOcrA47PaMti-228nN6EsxEx7Zpl8bLpQLDWX8XN8N2IKYoyo8nlQKThgziotgKXYJO22Z2DYImGTB46X2u2MfscSAedjzEhssJwVre5w2zztAAgU7E2mSif6V7jC42W7OmKQmi79_N10OAxxMUqUc7c0Q"
+       }}
+  """
+  @spec renew_jwt(%__MODULE__{}) :: {:ok, __MODULE__.t()} | {:error, :invalid_authorization} | {:error, any()}
   def renew_jwt(auth = %__MODULE__{}) do
     with {:ok, auth_uri} <- auth_endpoint_uri(),
          {:ok, auth, %{status_code: 302, headers: %{"Location" => location}}} <- http_get(auth, auth_uri),
@@ -62,7 +78,7 @@ defmodule Fluminus.Authorization do
     end
   end
 
-  @spec handle_callback(%__MODULE__{}, String.t()) :: {:ok, %__MODULE__{}}
+  @spec handle_callback(__MODULE__.t(), String.t()) :: {:ok, __MODULE__.t()}
   defp handle_callback(auth = %__MODULE__{}, location) when is_binary(location) do
     case URI.parse(location) do
       %{fragment: nil} ->
@@ -77,7 +93,7 @@ defmodule Fluminus.Authorization do
     end
   end
 
-  @spec auth_login_info :: {:ok, %__MODULE__{}, String.t(), map()} | {:error, :floki} | {:error, any()}
+  @spec auth_login_info :: {:ok, __MODULE__.t(), String.t(), map()} | {:error, :floki} | {:error, any()}
   defp auth_login_info do
     with {:ok, auth_uri} <- auth_endpoint_uri(),
          {:ok, auth, %{status_code: 302, headers: %{"Location" => location}}} <- http_get(%__MODULE__{}, auth_uri),
@@ -94,14 +110,14 @@ defmodule Fluminus.Authorization do
     end
   end
 
-  @spec http_get(%__MODULE__{}, String.t(), %{required(String.t()) => String.t()}) ::
-          {:ok, %HTTPoison.Response{}, %__MODULE__{}} | {:error, %HTTPoison.Error{}}
+  @spec http_get(__MODULE__.t(), String.t(), %{required(String.t()) => String.t()}) ::
+          {:ok, %HTTPoison.Response{}, __MODULE__.t()} | {:error, %HTTPoison.Error{}}
   defp http_get(authorization = %__MODULE__{}, url, headers \\ %{}) when is_binary(url) and is_map(headers) do
     http_request(authorization, :get, url, "", headers)
   end
 
-  @spec http_post(%__MODULE__{}, String.t(), String.t(), %{required(String.t()) => String.t()}) ::
-          {:ok, %HTTPoison.Response{}, %__MODULE__{}} | {:error, %HTTPoison.Error{}}
+  @spec http_post(__MODULE__.t(), String.t(), String.t(), %{required(String.t()) => String.t()}) ::
+          {:ok, %HTTPoison.Response{}, __MODULE__.t()} | {:error, %HTTPoison.Error{}}
   defp http_post(
          authorization = %__MODULE__{},
          url,
@@ -112,9 +128,9 @@ defmodule Fluminus.Authorization do
     http_request(authorization, :post, url, body, headers)
   end
 
-  @spec http_request(%__MODULE__{}, :get | :post, String.t(), String.t(), %{
+  @spec http_request(__MODULE__.t(), :get | :post, String.t(), String.t(), %{
           required(String.t()) => String.t()
-        }) :: {:ok, %HTTPoison.Response{}, %__MODULE__{}} | {:error, %HTTPoison.Error{}}
+        }) :: {:ok, %HTTPoison.Response{}, __MODULE__.t()} | {:error, %HTTPoison.Error{}}
   defp http_request(authorization = %__MODULE__{}, method, url, body, headers)
        when method in [:get, :post] and is_binary(url) and is_binary(body) and is_map(headers) do
     headers = Map.put(headers, "Cookie", cookies_string(authorization))
@@ -133,7 +149,7 @@ defmodule Fluminus.Authorization do
     end
   end
 
-  @spec add_cookie(%__MODULE__{cookies: %{required(String.t()) => String.t()}}, nil | String.t()) :: %__MODULE__{}
+  @spec add_cookie(__MODULE__.t(), nil | String.t()) :: __MODULE__.t()
   defp add_cookie(authorization = %__MODULE__{}, nil), do: authorization
 
   defp add_cookie(authorization = %__MODULE__{cookies: cookies}, raw_cookie)
@@ -142,7 +158,7 @@ defmodule Fluminus.Authorization do
     %__MODULE__{authorization | cookies: Map.put(cookies, key, value)}
   end
 
-  @spec cookies_string(%__MODULE__{cookies: %{required(String.t()) => String.t()}}) :: String.t()
+  @spec cookies_string(__MODULE__.t()) :: String.t()
   defp cookies_string(%__MODULE__{cookies: cookies}) when is_map(cookies) do
     cookies |> Enum.map(fn {k, v} -> "#{k}=#{v}; " end) |> Enum.join()
   end

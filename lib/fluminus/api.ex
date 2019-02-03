@@ -17,12 +17,12 @@ defmodule Fluminus.API do
   The LumiNUS API returns the name of the user all capitalised, but this function normalises the
   capitalisation to Title Case.
 
-  ## Example
+  ## Examples
 
       iex> Fluminus.API.name(auth)
       "John Smith"
   """
-  @spec name(%Authorization{}) :: String.t()
+  @spec name(Authorization.t()) :: String.t()
   def name(auth = %Authorization{}) do
     {:ok, result} = api(auth, "/user/Profile")
 
@@ -36,12 +36,12 @@ defmodule Fluminus.API do
   @doc """
   Returns a tuple of {current_term, human_readable_term_description}.
 
-  ## Example
+  ## Examples
 
       iex> Fluminus.API.current_term(auth)
       {"1820", "2018/2019 Semester 2"}
   """
-  @spec current_term(%Authorization{}) :: {String.t(), String.t()}
+  @spec current_term(Authorization.t()) :: {String.t(), String.t()}
   def current_term(auth = %Authorization{}) do
     {:ok, %{"termDetail" => %{"term" => term, "description" => description}}} =
       api(auth, "/setting/AcademicWeek/current?populate=termDetail")
@@ -100,7 +100,7 @@ defmodule Fluminus.API do
         }
       ]
   """
-  @spec modules(%Authorization{}) :: [%Module{}]
+  @spec modules(Authorization.t()) :: [%Module{}]
   def modules(auth = %Authorization{}, current_term_only \\ false) do
     {:ok, %{"data" => data}} = api(auth, "/module")
 
@@ -117,7 +117,7 @@ defmodule Fluminus.API do
   @doc """
   Makes a LumiNUS API call with a given authorization, and then parses the JSON response.
 
-  ## Example
+  ## Examples
 
       iex> Fluminus.API.api(authorization, "/user/Profile")
       {:ok,
@@ -132,7 +132,7 @@ defmodule Fluminus.API do
          "userNameOriginal" => "JOHN SMITH"
        }}
   """
-  @spec api(%Authorization{}, String.t(), :get | :post, String.t(), %{required(String.t()) => String.t()}) ::
+  @spec api(Authorization.t(), String.t(), :get | :post, String.t(), %{required(String.t()) => String.t()}) ::
           {:ok, map()} | {:error, :expired_token} | {:error, {:unexpected_content, any()}} | {:error, any()}
   def api(auth = %Authorization{}, path, method \\ :get, body \\ "", headers \\ %{}) when method in [:get, :post] do
     headers =

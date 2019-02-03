@@ -3,7 +3,6 @@ defmodule Fluminus.CLI do
   Provides functions related to Fluminus' CLI.
   """
 
-  @spec run(any()) :: none()
   def run(_) do
     HTTPoison.start()
     username = IO.gets("username: ") |> String.trim()

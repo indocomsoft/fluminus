@@ -69,7 +69,7 @@ defmodule Fluminus.Authorization do
     with {:ok, auth_uri} <- auth_endpoint_uri(),
          {:ok, auth, %{status_code: 302, headers: %{"Location" => location}}} <- http_get(auth, auth_uri),
          {:ok, auth} <- handle_callback(auth, location) do
-      auth
+      {:ok, auth}
     else
       {:error, :invalid_callback} -> {:error, :invalid_authorization}
       {:error, error} -> {:error, error}

@@ -13,6 +13,8 @@ defmodule Fluminus.API.Module do
   is invalid
   """
 
+  alias Fluminus.{API, Authorization}
+
   @teacher_access ~w(access_Full access_Create access_Update access_Delete access_Settings_Read access_Settings_Update)
 
   @type t :: %__MODULE__{
@@ -29,7 +31,7 @@ defmodule Fluminus.API.Module do
   @doc """
   Creates `#{__MODULE__}` struct from LumiNUS API response.
   """
-  @spec from_api(api_response :: any()) :: %__MODULE__{valid?: bool()}
+  @spec from_api(any()) :: %__MODULE__{valid?: bool()}
   def from_api(_api_response = %{"id" => id, "name" => code, "courseName" => name, "access" => access, "term" => term}) do
     %__MODULE__{
       id: id,
@@ -42,4 +44,18 @@ defmodule Fluminus.API.Module do
   end
 
   def from_api(_api_response), do: %__MODULE__{valid?: false}
+
+  @doc """
+  Returns a list of `{announcement_title, announcement_content}` for a given module.
+
+  The LumiNUS API provides 2 separate endpoints for archived and non-archived announcements. By default,
+  announcements are archived after roughly 16 weeks (hence, the end of the semester) so most of the times,
+  we should never need to access archived announcements.
+  """
+  @spec announcements(__MODULE__.t(), Authorization.t(), bool()) :: [{String.t(), String.t()}]
+  def announcements(%__MODULE__{id: id}, auth = %Authorization{}, archived \\ false) do
+    uri = "/announcement/#{if archived, do: "Archived", else: "NonArchived"}/#{id}?sortby=displayFrom%20DESC"
+    {:ok, %{"data" => data}} = API.api(auth, uri)
+    Enum.map(data, &{&1["title"], HtmlSanitizeEx.strip_tags(&1["description"])})
+  end
 end

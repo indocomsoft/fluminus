@@ -30,6 +30,7 @@ defmodule Fluminus.MixProject do
     [
       {:floki, "~> 0.20.0"},
       {:html_entities, "~> 0.4"},
+      {:html_sanitize_ex, "~> 1.3.0"},
       {:httpoison, "~> 1.4"},
       {:jason, "~> 1.1"},
       {:dialyxir, "~> 1.0.0-rc.4", only: :dev, runtime: false},

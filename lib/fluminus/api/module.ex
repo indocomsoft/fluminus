@@ -31,7 +31,7 @@ defmodule Fluminus.API.Module do
   @doc """
   Creates `#{__MODULE__}` struct from LumiNUS API response.
   """
-  @spec from_api(any()) :: %__MODULE__{valid?: bool()}
+  @spec from_api(any()) :: __MODULE__.t()
   def from_api(_api_response = %{"id" => id, "name" => code, "courseName" => name, "access" => access, "term" => term}) do
     %__MODULE__{
       id: id,

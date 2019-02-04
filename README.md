@@ -15,10 +15,23 @@ PR's are welcome.
 
 ![demo](demo.gif)
 
-<!--
 ## Installation
 
+1. Install elixir+erlang for your platform
+2. Clone this repo
+3. Get the dependencies:
+```bash
+mix deps.get
+```
+4. Fluminus CLI is available as a mix task:
+```bash
+mix fluminus
+```
 
+Note that the first time running the mix task might be a bit slow because
+the code has to be compiled first.
+
+<!--
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 by adding `fluminus` to your list of dependencies in `mix.exs`:
 

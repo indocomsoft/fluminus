@@ -8,6 +8,9 @@ defmodule Fluminus.MixProject do
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      source_url: "https://github.com/indocomsoft/fluminus",
+      package: package(),
+      description: description(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -37,6 +40,17 @@ defmodule Fluminus.MixProject do
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
+    ]
+  end
+
+  defp description do
+    "A client for the reverse-engineered LumiNUS API (https://luminus.nus.edu.sg)"
+  end
+
+  defp package() do
+    [
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/indocomsoft/fluminus"}
     ]
   end
 end

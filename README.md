@@ -16,7 +16,7 @@ PR's are welcome.
 ![demo](demo.gif)
 
 ## Installation
-
+### CLI
 1. Install elixir+erlang for your platform
 2. Clone this repo
 3. Get the dependencies:
@@ -31,19 +31,17 @@ mix fluminus
 Note that the first time running the mix task might be a bit slow because
 the code has to be compiled first.
 
-<!--
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `fluminus` to your list of dependencies in `mix.exs`:
+### As a dependency
+
+This package can be installed by adding `fluminus` to your list of
+dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:fluminus, "~> 0.1.0"}
+    {:fluminus, "~> 0.0.1"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/fluminus](https://hexdocs.pm/fluminus).
--->
+Documentation can be found at [https://hexdocs.pm/fluminus](https://hexdocs.pm/fluminus).

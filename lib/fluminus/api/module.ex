@@ -54,7 +54,7 @@ defmodule Fluminus.API.Module do
   """
   @spec announcements(__MODULE__.t(), Authorization.t(), bool()) :: [{String.t(), String.t()}]
   def announcements(%__MODULE__{id: id}, auth = %Authorization{}, archived \\ false) do
-    uri = "/announcement/#{if archived, do: "Archived", else: "NonArchived"}/#{id}?sortby=displayFrom%20DESC"
+    uri = "/announcement/#{if archived, do: "Archived", else: "NonArchived"}/#{id}?sortby=displayFrom%20ASC"
     {:ok, %{"data" => data}} = API.api(auth, uri)
     Enum.map(data, &{&1["title"], HtmlSanitizeEx.strip_tags(&1["description"])})
   end

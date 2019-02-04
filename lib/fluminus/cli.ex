@@ -3,7 +3,7 @@ defmodule Fluminus.CLI do
   Provides functions related to Fluminus' CLI.
   """
 
-  def run(_) do
+  def run(args) do
     HTTPoison.start()
     username = IO.gets("username: ") |> String.trim()
     password = password_get("password: ") |> String.trim()
@@ -16,6 +16,21 @@ defmodule Fluminus.CLI do
         modules |> Enum.filter(&(not &1.teaching?)) |> Enum.each(&IO.puts("- #{&1.code} #{&1.name}"))
         IO.puts("And teaching:")
         modules |> Enum.filter(& &1.teaching?) |> Enum.each(&IO.puts("- #{&1.code} #{&1.name}"))
+
+        if "--announcements" in args do
+          IO.puts("\n# Announcements:\n")
+
+          for mod <- modules do
+            IO.puts("## #{mod.code} #{mod.name}")
+
+            for {title, description} <- Fluminus.API.Module.announcements(mod, auth) do
+              IO.puts("=== #{title} ===")
+              IO.puts(description)
+            end
+
+            IO.puts("")
+          end
+        end
 
       {:error, :invalid_credentials} ->
         IO.puts("Invalid credentials!")

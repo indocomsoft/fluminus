@@ -9,6 +9,10 @@ defmodule Fluminus.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       source_url: "https://github.com/indocomsoft/fluminus",
+      docs: [
+        main: "readme",
+        extras: ["README.md"]
+      ],
       package: package(),
       description: description(),
       test_coverage: [tool: ExCoveralls],

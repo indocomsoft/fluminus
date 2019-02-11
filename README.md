@@ -1,9 +1,7 @@
-# Fluminus [WIP]
+# Fluminus
 
 [![Build Status](https://travis-ci.com/indocomsoft/fluminus.svg?branch=master)](https://travis-ci.com/indocomsoft/fluminus)
 [![Coverage Status](https://coveralls.io/repos/github/indocomsoft/fluminus/badge.svg?branch=master)](https://coveralls.io/github/indocomsoft/fluminus?branch=master)
-
-Warning: this is still a work-in-progress.
 
 <sup><sub>F LumiNUS! IVLE ftw! Why fix what ain't broken?!</sub></sup>
 
@@ -45,3 +43,6 @@ end
 ```
 
 Documentation can be found at [https://hexdocs.pm/fluminus](https://hexdocs.pm/fluminus).
+
+## Roadmap
+- [ ] Write tests, mock with ExVCR

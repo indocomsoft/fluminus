@@ -51,6 +51,11 @@ defmodule Fluminus.API.File do
     file
   end
 
+  @doc """
+  Obtains the download url for a given file.
+
+  Note that the download url of a directory is a url to that directory zipped.
+  """
   def get_download_url(_file = %__MODULE__{id: id}, auth) do
     {:ok, %{"data" => data}} = API.api(auth, "/files/file/#{id}/downloadurl")
     data

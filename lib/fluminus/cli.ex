@@ -29,42 +29,83 @@ defmodule Fluminus.CLI do
 
   @spec run([String.t()], Authorization.t()) :: :ok
   defp run(args, auth = %Authorization{}) do
-    {parsed, _, _} = OptionParser.parse(args, strict: [announcements: :boolean, files: :boolean])
+    {parsed, _, _} = OptionParser.parse(args, strict: [announcements: :boolean, files: :boolean, download_to: :string])
 
     IO.puts("Hi #{Fluminus.API.name(auth)}")
-    modules = Fluminus.API.modules(auth)
+    modules = Fluminus.API.modules(auth, true)
     IO.puts("You are taking:")
     modules |> Enum.filter(&(not &1.teaching?)) |> Enum.each(&IO.puts("- #{&1.code} #{&1.name}"))
     IO.puts("And teaching:")
     modules |> Enum.filter(& &1.teaching?) |> Enum.each(&IO.puts("- #{&1.code} #{&1.name}"))
+    IO.puts("")
 
-    if parsed[:announcements] do
-      IO.puts("\n# Announcements:\n")
+    Enum.each(parsed, fn
+      {:announcements, true} -> list_announcements(auth, modules)
+      {:files, true} -> list_files(auth, modules)
+      {:download_to, path} -> download_to(auth, modules, path)
+    end)
+  end
 
+  defp download_to(auth, modules, path) do
+    IO.puts("Download to #{path}")
+
+    if Elixir.File.exists?(path) do
       for mod <- modules do
-        IO.puts("## #{mod.code} #{mod.name}")
+        IO.puts("## #{mod.code}\n")
 
-        for {title, description} <- Fluminus.API.Module.announcements(mod, auth) do
-          IO.puts("=== #{title} ===")
-          IO.puts(description)
-        end
+        mod
+        |> File.from_module(auth)
+        |> download_file(auth, path)
 
-        IO.puts("")
+        IO.puts("\n")
+      end
+    else
+      IO.puts("Download destination does not exist!")
+    end
+  end
+
+  defp download_file(file, auth, path) do
+    destination = Path.join(path, file.name)
+
+    if file.directory? do
+      Elixir.File.mkdir_p!(destination)
+
+      file.children
+      |> Enum.map(&File.load_children(&1, auth))
+      |> Enum.each(&download_file(&1, auth, destination))
+    else
+      case File.download(file, auth, path) do
+        :ok -> IO.puts("Downloaded to #{destination}")
+        {:error, :exists} -> :ok
+        {:error, reason} -> IO.puts("Unable to download to #{destination}, reason: #{reason}")
       end
     end
+  end
 
-    if parsed[:files] do
-      IO.puts("\n# Files:\n")
+  defp list_files(auth, modules) do
+    IO.puts("\n# Files:\n")
 
-      for mod <- modules do
-        IO.puts("## #{mod.code} #{mod.name}")
+    for mod <- modules do
+      IO.puts("## #{mod.code} #{mod.name}")
 
-        mod |> File.from_module(auth) |> list_file(auth)
-        IO.puts("")
-      end
+      mod |> File.from_module(auth) |> list_file(auth)
+      IO.puts("")
     end
+  end
 
-    :ok
+  defp list_announcements(auth, modules) do
+    IO.puts("\n# Announcements:\n")
+
+    for mod <- modules do
+      IO.puts("## #{mod.code} #{mod.name}")
+
+      for {title, description} <- Fluminus.API.Module.announcements(mod, auth) do
+        IO.puts("=== #{title} ===")
+        IO.puts(description)
+      end
+
+      IO.puts("")
+    end
   end
 
   @spec load_credentials :: {String.t(), String.t()}

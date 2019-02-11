@@ -62,6 +62,48 @@ defmodule Fluminus.API.File do
     data
   end
 
+  @doc """
+  Downloads the given file to the location specified by `path`.
+
+  This function will return `{:error, :exists}` if the file already exists in the given `path`
+  """
+  @spec download(__MODULE__.t(), Authorization.t(), Path.t()) :: :ok | {:error, :exists | any()}
+  def download(file = %__MODULE__{name: name}, auth = %Authorization{}, path) do
+    url = get_download_url(file, auth)
+    destination = Path.join(path, name)
+
+    with {:exists?, false} <- {:exists?, File.exists?(destination)},
+         {:ok, file} <- File.open(destination, [:write]),
+         {:ok, response} = HTTPoison.get(url, [], stream_to: self(), async: :once),
+         :ok <- download_loop(response, file),
+         :ok <- File.close(file) do
+      :ok
+    else
+      {:exists?, true} -> {:error, :exists}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp download_loop(response = %HTTPoison.AsyncResponse{id: id}, file) do
+    receive do
+      %HTTPoison.AsyncStatus{code: 200, id: ^id} ->
+        HTTPoison.stream_next(response)
+        download_loop(response, file)
+
+      %HTTPoison.AsyncHeaders{id: ^id} ->
+        HTTPoison.stream_next(response)
+        download_loop(response, file)
+
+      %HTTPoison.AsyncChunk{chunk: chunk, id: ^id} ->
+        IO.binwrite(file, chunk)
+        HTTPoison.stream_next(response)
+        download_loop(response, file)
+
+      %HTTPoison.AsyncEnd{id: ^id} ->
+        :ok
+    end
+  end
+
   @spec get_children(String.t(), Authorization.t()) :: [__MODULE__.t()]
   defp get_children(id, auth = %Authorization{}) when is_binary(id) do
     {:ok, %{"data" => directory_children_data}} = API.api(auth, "/files/?ParentID=#{id}")

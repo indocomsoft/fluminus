@@ -24,3 +24,6 @@ fluminus-*.tar
 
 # Ignore asdf files
 .tool-versions
+
+# Ignore configuration
+config.json

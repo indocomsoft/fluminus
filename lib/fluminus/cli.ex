@@ -53,7 +53,7 @@ defmodule Fluminus.CLI do
     end
   end
 
-  defp list_file(file, auth), do: list_file(file, auth, "#{file.name}")
+  defp list_file(file, auth), do: list_file(file, auth, "")
 
   defp list_file(file, auth, prefix) when is_binary(prefix) do
     if file.directory? do

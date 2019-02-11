@@ -51,6 +51,11 @@ defmodule Fluminus.API.File do
     file
   end
 
+  def get_download_url(_file = %__MODULE__{id: id}, auth) do
+    {:ok, %{"data" => data}} = API.api(auth, "/files/file/#{id}/downloadurl")
+    data
+  end
+
   defp get_children(id, auth = %Authorization{}) when is_binary(id) do
     {:ok, %{"data" => directory_children_data}} = API.api(auth, "/files/?ParentID=#{id}")
     {:ok, %{"data" => files_children_data}} = API.api(auth, "/files/#{id}/file")

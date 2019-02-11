@@ -3,6 +3,8 @@ defmodule Fluminus.CLI do
   Provides functions related to Fluminus' CLI.
   """
 
+  alias Fluminus.API.File
+
   def run(args) do
     HTTPoison.start()
     username = IO.gets("username: ") |> String.trim()
@@ -32,11 +34,34 @@ defmodule Fluminus.CLI do
           end
         end
 
+        if "--files" in args do
+          IO.puts("\n# Files:\n")
+
+          for mod <- modules do
+            IO.puts("## #{mod.code} #{mod.name}")
+
+            mod |> File.from_module(auth) |> list_file(auth)
+            IO.puts("")
+          end
+        end
+
       {:error, :invalid_credentials} ->
         IO.puts("Invalid credentials!")
 
       {:error, error} ->
         IO.puts("Error: #{inspect(error)}")
+    end
+  end
+
+  defp list_file(file, auth), do: list_file(file, auth, "#{file.name}")
+
+  defp list_file(file, auth, prefix) when is_binary(prefix) do
+    if file.directory? do
+      file.children
+      |> Enum.map(&File.load_children(&1, auth))
+      |> Enum.each(&list_file(&1, auth, "#{prefix}/#{file.name}"))
+    else
+      IO.puts("#{prefix}/#{file.name}")
     end
   end
 

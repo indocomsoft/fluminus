@@ -27,7 +27,8 @@ defmodule Fluminus.CLI do
     end
   end
 
-  def run(args, auth = %Authorization{}) do
+  @spec run([String.t()], Authorization.t()) :: :ok
+  defp run(args, auth = %Authorization{}) do
     {parsed, _, _} = OptionParser.parse(args, strict: [announcements: :boolean, files: :boolean])
 
     IO.puts("Hi #{Fluminus.API.name(auth)}")
@@ -62,8 +63,11 @@ defmodule Fluminus.CLI do
         IO.puts("")
       end
     end
+
+    :ok
   end
 
+  @spec load_credentials :: {String.t(), String.t()}
   defp load_credentials do
     with {:ok, data} <- Elixir.File.read(@config_file),
          {:ok, decoded} <- Jason.decode(data) do
@@ -76,7 +80,8 @@ defmodule Fluminus.CLI do
     end
   end
 
-  def clear_credentials do
+  @spec clear_credentials() :: :ok | nil
+  defp clear_credentials do
     case Elixir.File.rm(@config_file) do
       :ok ->
         IO.puts("Cleared stored credentials")
@@ -87,6 +92,7 @@ defmodule Fluminus.CLI do
     end
   end
 
+  @spec save_credentials(String.t(), String.t()) :: :ok | :error
   defp save_credentials(username, password) when is_binary(username) and is_binary(password) do
     data = %{username: username, password: password}
 
@@ -105,6 +111,7 @@ defmodule Fluminus.CLI do
     end
   end
 
+  @spec confirm?(String.t()) :: bool()
   defp confirm?(prompt) when is_binary(prompt) do
     answer = prompt |> IO.gets() |> String.trim() |> String.downcase()
 
@@ -115,6 +122,7 @@ defmodule Fluminus.CLI do
     end
   end
 
+  @spec list_file(File.t(), Authorization.t()) :: :ok
   defp list_file(file, auth), do: list_file(file, auth, "")
 
   defp list_file(file, auth, prefix) when is_binary(prefix) do
@@ -130,6 +138,7 @@ defmodule Fluminus.CLI do
   # From Mix.Hex.Utils
   # Password prompt that hides input by every 1ms
   # clearing the line with stderr
+  @spec password_get(String.t()) :: String.t()
   defp password_get(prompt) do
     pid = spawn_link(fn -> loop(prompt) end)
     ref = make_ref()

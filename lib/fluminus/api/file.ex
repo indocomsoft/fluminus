@@ -25,6 +25,7 @@ defmodule Fluminus.API.File do
   @doc """
   Creates `#{__MODULE__}` struct from a `Module`.
   """
+  @spec from_module(Module.t(), Authorization.t()) :: __MODULE__.t()
   def from_module(_module = %Module{id: id, code: code}, auth = %Authorization{}) do
     %__MODULE__{
       id: id,
@@ -34,11 +35,10 @@ defmodule Fluminus.API.File do
     }
   end
 
-  def from_module(_module, _auth), do: nil
-
   @doc """
   Loads the children of a given `#{__MODULE__}` struct.
   """
+  @spec load_children(__MODULE__.t(), Authorization.t()) :: __MODULE__.t()
   def load_children(file = %__MODULE__{id: id, directory?: true, children: nil}, auth = %Authorization{}) do
     %__MODULE__{file | children: get_children(id, auth)}
   end
@@ -56,11 +56,13 @@ defmodule Fluminus.API.File do
 
   Note that the download url of a directory is a url to that directory zipped.
   """
-  def get_download_url(_file = %__MODULE__{id: id}, auth) do
+  @spec get_download_url(__MODULE__.t(), Authorization.t()) :: String.t()
+  def get_download_url(_file = %__MODULE__{id: id}, auth = %Authorization{}) do
     {:ok, %{"data" => data}} = API.api(auth, "/files/file/#{id}/downloadurl")
     data
   end
 
+  @spec get_children(String.t(), Authorization.t()) :: [__MODULE__.t()]
   defp get_children(id, auth = %Authorization{}) when is_binary(id) do
     {:ok, %{"data" => directory_children_data}} = API.api(auth, "/files/?ParentID=#{id}")
     {:ok, %{"data" => files_children_data}} = API.api(auth, "/files/#{id}/file")
@@ -68,12 +70,14 @@ defmodule Fluminus.API.File do
     Enum.map(directory_children_data ++ files_children_data, &parse_child/1)
   end
 
+  @spec sanitise_filename(String.t()) :: String.t()
   defp sanitise_filename(name) when is_binary(name) do
     # According to http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html:
     # The bytes composing the name shall not contain the <NUL> or <slash> characters
     String.replace(name, ~r|[/\0]|, "-")
   end
 
+  @spec parse_child(map()) :: __MODULE__.t()
   defp parse_child(child = %{"id" => id, "name" => name}) do
     directory? = is_map(child["access"])
 

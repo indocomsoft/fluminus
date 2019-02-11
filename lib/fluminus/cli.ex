@@ -4,52 +4,59 @@ defmodule Fluminus.CLI do
   """
 
   alias Fluminus.API.File
+  alias Fluminus.Authorization
 
   def run(args) do
     HTTPoison.start()
     username = IO.gets("username: ") |> String.trim()
     password = password_get("password: ") |> String.trim()
 
-    case Fluminus.Authorization.jwt(username, password) do
+    case Authorization.jwt(username, password) do
       {:ok, auth} ->
-        IO.puts("Hi #{Fluminus.API.name(auth)}")
-        modules = Fluminus.API.modules(auth)
-        IO.puts("You are taking:")
-        modules |> Enum.filter(&(not &1.teaching?)) |> Enum.each(&IO.puts("- #{&1.code} #{&1.name}"))
-        IO.puts("And teaching:")
-        modules |> Enum.filter(& &1.teaching?) |> Enum.each(&IO.puts("- #{&1.code} #{&1.name}"))
-
-        if "--announcements" in args do
-          IO.puts("\n# Announcements:\n")
-
-          for mod <- modules do
-            IO.puts("## #{mod.code} #{mod.name}")
-
-            for {title, description} <- Fluminus.API.Module.announcements(mod, auth) do
-              IO.puts("=== #{title} ===")
-              IO.puts(description)
-            end
-
-            IO.puts("")
-          end
-        end
-
-        if "--files" in args do
-          IO.puts("\n# Files:\n")
-
-          for mod <- modules do
-            IO.puts("## #{mod.code} #{mod.name}")
-
-            mod |> File.from_module(auth) |> list_file(auth)
-            IO.puts("")
-          end
-        end
+        run(args, auth)
 
       {:error, :invalid_credentials} ->
         IO.puts("Invalid credentials!")
 
       {:error, error} ->
         IO.puts("Error: #{inspect(error)}")
+    end
+  end
+
+  def run(args, auth = %Authorization{}) do
+    {parsed, _, _} = OptionParser.parse(args, strict: [announcements: :boolean, files: :boolean])
+
+    IO.puts("Hi #{Fluminus.API.name(auth)}")
+    modules = Fluminus.API.modules(auth)
+    IO.puts("You are taking:")
+    modules |> Enum.filter(&(not &1.teaching?)) |> Enum.each(&IO.puts("- #{&1.code} #{&1.name}"))
+    IO.puts("And teaching:")
+    modules |> Enum.filter(& &1.teaching?) |> Enum.each(&IO.puts("- #{&1.code} #{&1.name}"))
+
+    if parsed[:announcements] do
+      IO.puts("\n# Announcements:\n")
+
+      for mod <- modules do
+        IO.puts("## #{mod.code} #{mod.name}")
+
+        for {title, description} <- Fluminus.API.Module.announcements(mod, auth) do
+          IO.puts("=== #{title} ===")
+          IO.puts(description)
+        end
+
+        IO.puts("")
+      end
+    end
+
+    if parsed[:files] do
+      IO.puts("\n# Files:\n")
+
+      for mod <- modules do
+        IO.puts("## #{mod.code} #{mod.name}")
+
+        mod |> File.from_module(auth) |> list_file(auth)
+        IO.puts("")
+      end
     end
   end
 

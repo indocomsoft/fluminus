@@ -49,7 +49,7 @@ defmodule Fluminus.CLI do
   defp download_to(auth, modules, path) do
     IO.puts("Download to #{path}")
 
-    if Elixir.File.exists?(path) do
+    if Elixir.File.dir?(path) do
       for mod <- modules do
         IO.puts("## #{mod.code}\n")
 
@@ -60,7 +60,7 @@ defmodule Fluminus.CLI do
         IO.puts("\n")
       end
     else
-      IO.puts("Download destination does not exist!")
+      IO.puts("Download destination does not exist or is not a directory!")
     end
   end
 

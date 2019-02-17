@@ -69,11 +69,11 @@ defmodule Fluminus.API.File do
   """
   @spec download(__MODULE__.t(), Authorization.t(), Path.t()) :: :ok | {:error, :exists | any()}
   def download(file = %__MODULE__{name: name}, auth = %Authorization{}, path) do
-    url = get_download_url(file, auth)
     destination = Path.join(path, name)
 
     with {:exists?, false} <- {:exists?, File.exists?(destination)},
          {:ok, file} <- File.open(destination, [:write]),
+         url <- get_download_url(file, auth),
          {:ok, response} = HTTPoison.get(url, [], stream_to: self(), async: :once),
          :ok <- download_loop(response, file),
          :ok <- File.close(file) do

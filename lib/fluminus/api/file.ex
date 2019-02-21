@@ -9,6 +9,7 @@ defmodule Fluminus.API.File do
   * `:directory?` - whether this file is a directory
   * `:children` - `nil` indicated the need to fetch, otherwise it contains a list of its children.
   if `directory?` is `false`, then this field contains an empty list.
+  * `:allow_upload?` - whether this is a student submission folder.
   """
 
   alias Fluminus.{API, Authorization}
@@ -18,9 +19,10 @@ defmodule Fluminus.API.File do
           id: String.t(),
           name: String.t(),
           directory?: bool(),
-          children: [__MODULE__.t()] | nil
+          children: [__MODULE__.t()] | nil,
+          allow_upload?: bool()
         }
-  defstruct ~w(id name directory? children)a
+  defstruct ~w(id name directory? children allow_upload?)a
 
   @doc """
   Creates `#{__MODULE__}` struct from a `Module`.
@@ -31,7 +33,8 @@ defmodule Fluminus.API.File do
       id: id,
       name: sanitise_filename(code),
       directory?: true,
-      children: get_children(id, auth)
+      children: get_children(id, auth, false),
+      allow_upload?: false
     }
   end
 
@@ -39,8 +42,11 @@ defmodule Fluminus.API.File do
   Loads the children of a given `#{__MODULE__}` struct.
   """
   @spec load_children(__MODULE__.t(), Authorization.t()) :: __MODULE__.t()
-  def load_children(file = %__MODULE__{id: id, directory?: true, children: nil}, auth = %Authorization{}) do
-    %__MODULE__{file | children: get_children(id, auth)}
+  def load_children(
+        file = %__MODULE__{id: id, directory?: true, children: nil, allow_upload?: allow_upload?},
+        auth = %Authorization{}
+      ) do
+    %__MODULE__{file | children: get_children(id, auth, allow_upload?)}
   end
 
   def load_children(file = %__MODULE__{directory?: false, children: nil}, _auth) do
@@ -104,12 +110,14 @@ defmodule Fluminus.API.File do
     end
   end
 
-  @spec get_children(String.t(), Authorization.t()) :: [__MODULE__.t()]
-  defp get_children(id, auth = %Authorization{}) when is_binary(id) do
+  @spec get_children(String.t(), Authorization.t(), bool()) :: [__MODULE__.t()]
+  defp get_children(id, auth = %Authorization{}, allow_upload?) when is_binary(id) and is_boolean(allow_upload?) do
     {:ok, %{"data" => directory_children_data}} = API.api(auth, "/files/?ParentID=#{id}")
-    {:ok, %{"data" => files_children_data}} = API.api(auth, "/files/#{id}/file")
 
-    Enum.map(directory_children_data ++ files_children_data, &parse_child/1)
+    {:ok, %{"data" => files_children_data}} =
+      API.api(auth, "/files/#{id}/file#{if allow_upload?, do: "?populate=Creator", else: ""}")
+
+    Enum.map(directory_children_data ++ files_children_data, &parse_child(&1, allow_upload?))
   end
 
   @spec sanitise_filename(String.t()) :: String.t()
@@ -119,15 +127,16 @@ defmodule Fluminus.API.File do
     String.replace(name, ~r|[/\0]|, "-")
   end
 
-  @spec parse_child(map()) :: __MODULE__.t()
-  defp parse_child(child = %{"id" => id, "name" => name}) do
+  @spec parse_child(map(), bool()) :: __MODULE__.t()
+  defp parse_child(child = %{"id" => id, "name" => name}, add_creator_name?) when is_boolean(add_creator_name?) do
     directory? = is_map(child["access"])
 
     %__MODULE__{
       id: id,
-      name: sanitise_filename(name),
+      name: sanitise_filename("#{if add_creator_name?, do: "#{child["creatorName"]} - ", else: ""}#{name}"),
       directory?: directory?,
-      children: if(directory?, do: nil, else: [])
+      children: if(directory?, do: nil, else: []),
+      allow_upload?: (if child["allowUpload"], do: true, else: false)
     }
   end
 end

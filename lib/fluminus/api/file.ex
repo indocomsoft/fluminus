@@ -136,7 +136,7 @@ defmodule Fluminus.API.File do
       name: sanitise_filename("#{if add_creator_name?, do: "#{child["creatorName"]} - ", else: ""}#{name}"),
       directory?: directory?,
       children: if(directory?, do: nil, else: []),
-      allow_upload?: (if child["allowUpload"], do: true, else: false)
+      allow_upload?: if(child["allowUpload"], do: true, else: false)
     }
   end
 end

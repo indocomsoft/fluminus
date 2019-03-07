@@ -35,6 +35,7 @@ defmodule Fluminus.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:cookie, "~> 0.1.1"},
       {:floki, "~> 0.20.0"},
       {:html_entities, "~> 0.4"},
       {:html_sanitize_ex, "~> 1.3.0"},

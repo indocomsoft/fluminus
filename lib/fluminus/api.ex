@@ -8,6 +8,8 @@ defmodule Fluminus.API do
   @api_base_url "https://luminus.azure-api.net"
   @ocm_apim_subscription_key "6963c200ca9440de8fa1eede730d8f7e"
 
+  @type headers() :: [{String.t(), String.t()}]
+
   alias Fluminus.API.Module
   alias Fluminus.Authorization
 
@@ -100,7 +102,7 @@ defmodule Fluminus.API do
         }
       ]
   """
-  @spec modules(Authorization.t()) :: [%Module{}]
+  @spec modules(Authorization.t()) :: [Module.t()]
   def modules(auth = %Authorization{}, current_term_only \\ false) do
     {:ok, %{"data" => data}} = api(auth, "/module")
 
@@ -132,16 +134,17 @@ defmodule Fluminus.API do
          "userNameOriginal" => "JOHN SMITH"
        }}
   """
-  @spec api(Authorization.t(), String.t(), :get | :post, String.t(), %{required(String.t()) => String.t()}) ::
+  @spec api(Authorization.t(), String.t(), :get | :post, String.t(), headers()) ::
           {:ok, map()} | {:error, :expired_token} | {:error, {:unexpected_content, any()}} | {:error, any()}
-  def api(auth = %Authorization{}, path, method \\ :get, body \\ "", headers \\ %{}) when method in [:get, :post] do
+  def api(%Authorization{jwt: jwt}, path, method \\ :get, body \\ "", headers \\ [])
+      when method in [:get, :post] do
     headers =
-      headers
-      |> Map.merge(%{
-        "Authorization" => "Bearer #{auth.jwt}",
-        "Ocp-Apim-Subscription-Key" => @ocm_apim_subscription_key,
-        "Content-Type" => "application/json"
-      })
+      headers ++
+        [
+          {"Authorization", "Bearer #{jwt}"},
+          {"Ocp-Apim-Subscription-Key", @ocm_apim_subscription_key},
+          {"Content-Type", "application/json"}
+        ]
 
     uri = full_api_uri(path)
 

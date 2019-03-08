@@ -30,7 +30,15 @@ defmodule Fluminus.Authorization do
   ## Examples
 
       iex> Fluminus.Authorization.jwt("e0123456", "hunter2")
-      {:ok, }
+        {:ok,
+         %Fluminus.Authorization{
+           client: %Fluminus.HTTPClient{
+             cookies: %{
+               "idsrv" => "Ksxzb3TnGZaxhpzK-Bi9AgkrCxcFNX76bL_IysaLMdOxqSA-FmnT3oEwXeiuOIIkt2buDXcmbhDgGJmfyOoQpUth01_hK0tEdd9ve37VzBQRP32HIVCiE_s7M-vGgTAnxV08NjcQ27CoNeFhD2gZmoU50ncxQFAOtys2x0jD3j80srBITiKU1jJ59RA8Y2UyRqAOgzkk95CvPDpcTsP3g925qJ9JKG0tCZ7TxJ9D0PSeQ-lHfPW8mD_6qzztwr0StiEPaVr-iFzniuixFY82_moVDbzfoSOl2SVNkZlY2d-mY3o6Yt6HH6Jr_uslQXMtsa-1UEQFAP0GAE9RpARSrtA3hx_gsYnujHyIAKrlKTevA7xAAEw97U7Hxs2BAQzVx2P-AGhz-MZ_0AsfwQNC0_4zfw2OVQsYlyLrZoyyoK0"
+             }
+           },
+           jwt: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSIsImtpZCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSJ9.eyJpc3MiOiJodHRwczovL2x1bWludXMubnVzLmVkdS5zZy92Mi9hdXRoIiwiYXVkIjoidmVyc28iLCJleHAiOjE1NTIwNDQxNjcsIm5iZiI6MTU1MjA0Mzg2Nywibm9uY2UiOiJiNjE4ZjE3NzQwYTJlOWM3YjQ2ZjlmMmZmODJiYWQ1YSIsImlhdCI6MTU1MjA0Mzg2NywiYXRfaGFzaCIaIlA5TTF4dU9fNVVrdklXNDdKUHhYYn9iLCJjX2hhc2giOiJzTVZMRVM42Us0VjFIaFlPZmUtenRnIiwic2lkIjoiOTVlNTJjZjI4OTMyNzMyZjRjZjIxMzAxZjQ3NTE3ODQiLCJzdWIiOiIwMzA4OTI1Mi0wYzk2LTRmYWItYjA4MC1mMmFlYjA3ZWVi2GYiLCJhdXRoX3RpbWUiOjE1NTIwNDM4NjcsImlkcCI6Ikakc3J2IiwiYWRkcmVzayI6IlJlcXVlc3QgYWxsIGNsYWltcyIsImFtciI6WyJwYXNzd29yZCJdfQ.ElRgTpfGJc3np4N37JZZFr_8ZXkuBYjw_vxFxt_GV311gGJlDnh9YDepzWnIsNgtgnuLlkHdb73q9mt2XIcn6YHL0r2kI-CbdKx57aaDfE3-tudRgEv8vXIh53q0Tt61OR5_86qB2qr3QQn0WFvC5VJMYfQ-MJevGrcKFe80vFQPihSHtpznD3G7SyczY3m1yRWsiHNgymvUc4LM5QETOHYv72jDfo7VcxFpscwr4o3os_9fYM_62WuRo7OOL3WdD2XAQB6NGaeakIOQwqMbDSMSvpc0McpGW4uljlmBTiRfzCn7i9bnbfkWLJ5C6mK2o2CWgp1rr2f-HZsIIe-w2Q"
+        }}
   """
   @spec jwt(String.t(), String.t()) :: {:ok, __MODULE__.t()} | {:error, :invalid_credentials} | {:error, any()}
   def jwt(username, password) when is_binary(username) and is_binary(password) do

@@ -38,8 +38,8 @@ defmodule Fluminus.MixProject do
     ]
   end
 
-  def applications(:test), do: applications(:default) ++ [:cowboy, :plug, :httpoison]
-  def applications(_), do: []
+  def applications(:test), do: applications(:default) ++ [:cowboy, :plug]
+  def applications(_), do: [:httpoison]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do

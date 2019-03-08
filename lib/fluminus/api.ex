@@ -5,8 +5,8 @@ defmodule Fluminus.API do
   This module is dependent on `Fluminus.Authorization` to authorize to the LumiNUS servers.
   """
 
-  @api_base_url Application.get_env(:fluminus, :api_base_url)
-  @ocm_apim_subscription_key Application.get_env(:fluminus, :ocm_apim_subscription_key)
+  @api_base_url Fluminus.Constants.api_base_url(Mix.env())
+  @ocm_apim_subscription_key "6963c200ca9440de8fa1eede730d8f7e"
 
   @type headers() :: [{String.t(), String.t()}]
 

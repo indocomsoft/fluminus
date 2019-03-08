@@ -8,12 +8,12 @@ defmodule Fluminus.Authorization do
   * `:jwt` - the JWT Bearer token to be used by the API.
   """
 
-  @auth_base_uri Application.get_env(:fluminus, :auth_base_uri)
-  @discovery_path Application.get_env(:fluminus, :discovery_path)
-  @client_id Application.get_env(:fluminus, :client_id)
-  @scope Application.get_env(:fluminus, :scope)
-  @response_type Application.get_env(:fluminus, :response_type)
-  @redirect_uri Application.get_env(:fluminus, :redirect_uri)
+  @auth_base_uri Fluminus.Constants.auth_base_uri(Mix.env())
+  @discovery_path "/v2/auth/.well-known/openid-configuration"
+  @client_id "verso"
+  @scope "profile email role openid lms.read calendar.read lms.delete lms.write calendar.write gradebook.write offline_access"
+  @response_type "id_token token code"
+  @redirect_uri "https://luminus.nus.edu.sg/auth/callback"
 
   alias Fluminus.HTTPClient
 

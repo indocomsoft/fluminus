@@ -7,7 +7,7 @@ defmodule Fluminus.MockAuthorizationServer do
 
   require Logger
 
-  @ets_cassettes_table_name Application.get_env(:fluminus, :ets_cassettes_table_name)
+  @ets_cassettes_table_name Fluminus.Constants.ets_cassettes_table_name(Mix.env())
 
   plug(Plug.Parsers,
     parsers: [:urlencoded, :json],

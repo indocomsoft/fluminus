@@ -1,8 +1,8 @@
 defmodule Fluminus.Application do
   @moduledoc false
 
-  @fixtures_path Application.get_env(:fluminus, :fixtures_path)
-  @ets_cassettes_table_name Application.get_env(:fluminus, :ets_cassettes_table_name)
+  @fixtures_path Fluminus.Constants.fixtures_path(Mix.env())
+  @ets_cassettes_table_name Fluminus.Constants.ets_cassettes_table_name(Mix.env())
 
   use Application
 

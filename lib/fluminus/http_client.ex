@@ -26,7 +26,7 @@ defmodule Fluminus.HTTPClient do
   @spec get(__MODULE__.t(), String.t(), headers()) ::
           {:ok, __MODULE__.t(), flattened_headers(), HTTPoison.Response.t()}
           | {:error, %HTTPoison.Error{}}
-  def get(client = %__MODULE__{}, url, headers \\ []) when is_binary(url) do
+  def get(client = %__MODULE__{}, url, headers \\ []) when is_binary(url) and is_list(headers) do
     request(client, :get, url, "", headers)
   end
 
@@ -39,7 +39,7 @@ defmodule Fluminus.HTTPClient do
           {:ok, __MODULE__.t(), flattened_headers(), HTTPoison.Response.t()}
           | {:error, %HTTPoison.Error{}}
   def post(client = %__MODULE__{}, url, body, headers \\ [{"Content-Type", "application/x-www-form-urlencoded"}])
-      when is_binary(url) and is_binary(body) do
+      when is_binary(url) and is_binary(body) and is_list(headers) do
     request(client, :post, url, body, headers)
   end
 
@@ -49,8 +49,8 @@ defmodule Fluminus.HTTPClient do
   @spec request(__MODULE__.t(), methods(), String.t(), String.t(), headers()) ::
           {:ok, __MODULE__.t(), flattened_headers(), HTTPoison.Response.t()}
           | {:error, %HTTPoison.Error{}}
-  def request(client = %__MODULE__{}, method, url, body \\ "", headers \\ [])
-      when method in @supported_methods and is_binary(url) and is_binary(body) do
+  def request(client = %__MODULE__{}, method, url, body, headers)
+      when method in @supported_methods and is_binary(url) and is_binary(body) and is_list(headers) do
     headers = generate_headers(client, headers)
 
     case HTTPoison.request(method, url, body, headers, recv_timeout: 10_000) do

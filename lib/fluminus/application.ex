@@ -1,12 +1,14 @@
 defmodule Fluminus.Application do
-  @moduledoc """
-  The OTP Application part of Fluminus.
+  @moduledoc false
 
-  Used only to start the mock servers during testing.
-  """
+  @fixtures_path Application.get_env(:fluminus, :fixtures_path)
+  @ets_cassettes_table_name Application.get_env(:fluminus, :ets_cassettes_table_name)
+
   use Application
 
   def start(_type, args) do
+    load_ets()
+
     children =
       case args do
         [env: :test] ->
@@ -21,5 +23,18 @@ defmodule Fluminus.Application do
 
     opts = [strategy: :one_for_one, name: Fluminus.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp load_ets do
+    :ets.new(@ets_cassettes_table_name, [:named_table])
+    :ets.insert(@ets_cassettes_table_name, {Fluminus.MockAPIServer, load_cassettes("api")})
+    :ets.insert(@ets_cassettes_table_name, {Fluminus.MockAuthorizationServer, load_cassettes("authorization")})
+  end
+
+  defp load_cassettes(directory) do
+    "#{@fixtures_path}/#{directory}/**/*.json"
+    |> Path.wildcard()
+    |> Enum.map(&File.read!/1)
+    |> Enum.map(&Jason.decode!/1)
   end
 end

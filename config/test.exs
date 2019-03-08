@@ -11,4 +11,5 @@ config :fluminus,
   response_type: "id_token token code",
   redirect_uri: "https://luminus.nus.edu.sg/auth/callback",
   api_base_url: "http://localhost:8082",
-  ocm_apim_subscription_key: "6963c200ca9440de8fa1eede730d8f7e"
+  ocm_apim_subscription_key: "6963c200ca9440de8fa1eede730d8f7e",
+  ets_cassettes_table_name: :cassettes

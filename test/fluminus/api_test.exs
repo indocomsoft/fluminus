@@ -11,4 +11,74 @@ defmodule Fluminus.APITest do
   test "name" do
     assert API.name(@authorization) == "John Smith"
   end
+
+  test "current_term" do
+    assert API.current_term(@authorization) == {"1820", "2018/2019 Semester 2"}
+  end
+
+  test "modules" do
+    assert API.modules(@authorization) == [
+             %Fluminus.API.Module{
+               code: "CS1101S",
+               id: "57290e55-335a-4c09-b904-a795572d6cda",
+               name: "Programming Methodology",
+               teaching?: true,
+               term: "1910",
+               valid?: true
+             },
+             %Fluminus.API.Module{
+               code: "CS2106",
+               id: "41cc9aa5-6704-48c1-a61c-4fe75ed085f6",
+               name: "Introduction to Operating Systems",
+               teaching?: false,
+               term: "1810",
+               valid?: true
+             },
+             %Fluminus.API.Module{
+               code: "CS2100",
+               id: "063773a9-43ac-4dc0-bdc6-4be2f5b50300",
+               name: "Computer Organisation",
+               teaching?: true,
+               term: "1820",
+               valid?: true
+             },
+             %Fluminus.API.Module{
+               code: "ST2334",
+               id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
+               name: "Probability and Statistics",
+               teaching?: false,
+               term: "1820",
+               valid?: true
+             },
+             %Fluminus.API.Module{
+               code: "CS1101S",
+               id: "8722e9a5-abc5-4160-820d-bf69d8a63c6f",
+               name: "Programming Methodology",
+               teaching?: true,
+               term: "1810",
+               valid?: true
+             }
+           ]
+  end
+
+  test "modules current_term_only" do
+    assert API.modules(@authorization, true) == [
+             %Fluminus.API.Module{
+               code: "CS2100",
+               id: "063773a9-43ac-4dc0-bdc6-4be2f5b50300",
+               name: "Computer Organisation",
+               teaching?: true,
+               term: "1820",
+               valid?: true
+             },
+             %Fluminus.API.Module{
+               code: "ST2334",
+               id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
+               name: "Probability and Statistics",
+               teaching?: false,
+               term: "1820",
+               valid?: true
+             }
+           ]
+  end
 end

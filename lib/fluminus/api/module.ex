@@ -32,7 +32,8 @@ defmodule Fluminus.API.Module do
   Creates `#{__MODULE__}` struct from LumiNUS API response.
   """
   @spec from_api(any()) :: __MODULE__.t()
-  def from_api(_api_response = %{"id" => id, "name" => code, "courseName" => name, "access" => access, "term" => term}) do
+  def from_api(_api_response = %{"id" => id, "name" => code, "courseName" => name, "access" => access, "term" => term})
+      when is_binary(id) and is_binary(code) and is_binary(name) and is_binary(term) and is_map(access) do
     %__MODULE__{
       id: id,
       code: code,

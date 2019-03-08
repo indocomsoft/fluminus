@@ -7,8 +7,6 @@ defmodule Fluminus.AuthorizationTest do
 
   alias Fluminus.{Authorization, HTTPClient}
 
-  require Logger
-
   test "jwt happy path" do
     {:ok, auth} = Authorization.jwt("e0123456", "hunter2")
 

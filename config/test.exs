@@ -1,0 +1,12 @@
+use Mix.Config
+
+config :fluminus,
+  auth_base_uri: "https://luminus.nus.edu.sg",
+  discovery_path: "/v2/auth/.well-known/openid-configuration",
+  client_id: "verso",
+  scope:
+    "profile email role openid lms.read calendar.read lms.delete lms.write calendar.write gradebook.write offline_access",
+  response_type: "id_token token code",
+  redirect_uri: "https://luminus.nus.edu.sg/auth/callback",
+  api_base_url: "https://luminus.azure-api.net",
+  ocm_apim_subscription_key: "6963c200ca9440de8fa1eede730d8f7e"

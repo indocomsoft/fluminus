@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET",
+    "request_path": "/files/40582141-1a1d-41b6-ba3a-efa44ff7fd05/file",
+    "query": {}
+  },
+  "response": {
+    "body": "{\"status\":\"success\",\"code\":200,\"total\":0,\"offset\":0,\"data\":[]}",
+    "headers": [],
+    "status_code": 200
+  }
+}

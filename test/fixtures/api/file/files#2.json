@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "request_path": "/files/",
+    "query": {
+      "ParentID": "7c464b62-3811-4c87-b1d1-7407e6ec321b"
+    }
+  },
+  "response": {
+    "body": "{\"status\":\"success\",\"code\":200,\"total\":0,\"offset\":0,\"data\":[]}",
+    "headers": [],
+    "status_code": 200
+  }
+}

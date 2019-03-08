@@ -103,6 +103,9 @@ defmodule Fluminus.HTTPClient do
 
       %HTTPoison.AsyncEnd{id: ^id} ->
         :ok
+
+      other ->
+        {:error, other}
     end
   end
 

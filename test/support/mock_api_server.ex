@@ -21,13 +21,13 @@ defmodule Fluminus.MockAPIServer do
   plug(:dispatch)
 
   match _ do
-    if Conn.get_req_header(conn, "authorization") == ["Bearer #{@id_token}"] and
-         Conn.get_req_header(conn, "ocp-apim-subscription-key") == [@ocm_apim_subscription_key] do
-      conn = conn |> Conn.fetch_cookies() |> Conn.fetch_query_params()
+    conn = conn |> Conn.fetch_cookies() |> Conn.fetch_query_params()
+    cassette = find_casette(conn)
 
-      cassette = find_casette(conn)
-
-      if cassette do
+    if cassette do
+      if cassette["request"]["allowWithoutAuthorization"] ||
+           (Conn.get_req_header(conn, "authorization") == ["Bearer #{@id_token}"] and
+              Conn.get_req_header(conn, "ocp-apim-subscription-key") == [@ocm_apim_subscription_key]) do
         response = cassette["response"]
 
         response["headers"]
@@ -36,11 +36,11 @@ defmodule Fluminus.MockAPIServer do
         end)
         |> Conn.resp(response["status_code"], response["body"])
       else
-        error(conn)
-        conn
+        Conn.send_resp(conn, 401, "")
       end
     else
-      Conn.resp(conn, 401, "")
+      error(conn)
+      conn
     end
   end
 

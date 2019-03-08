@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "request_path": "/v2/api/files/download/6f3cfb8c-5b91-4d5a-849a-70dcb31eea87",
+    "query": {},
+    "allowWithoutAuthorization": true
+  },
+  "response": {
+    "body": "This is just a sample file.\n",
+    "headers": [],
+    "status_code": 200
+  }
+}

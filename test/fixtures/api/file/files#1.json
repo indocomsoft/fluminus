@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "request_path": "/files/",
+    "query": {
+      "ParentID":"40582141-1a1d-41b6-ba3a-efa44ff7fd05"
+    }
+  },
+  "response": {
+    "body": "{\"status\":\"success\",\"code\":200,\"total\":2,\"offset\":0,\"data\":[{\"access\":{\"access_Full\":false,\"access_Read\":true,\"access_Create\":false,\"access_Update\":false,\"access_Delete\":false,\"access_Settings_Read\":false,\"access_Settings_Update\":false},\"id\":\"7c464b62-3811-4c87-b1d1-7407e6ec321b\",\"createdDate\":\"2019-01-07T10:25:54.187+08:00\",\"creatorID\":\"07452470-15d3-49f5-b1ac-d1903644cdcc\",\"lastUpdatedDate\":\"2019-01-07T10:25:54.187+08:00\",\"lastUpdatedBy\":\"07452470-15d3-49f5-b1ac-d1903644cdcc\",\"name\":\"Tutorial Questions\",\"startDate\":\"2019-01-07T10:25:30.027+08:00\",\"endDate\":\"2019-05-08T10:25:00+08:00\",\"publish\":true,\"parentID\":\"40582141-1a1d-41b6-ba3a-efa44ff7fd05\",\"rootID\":\"40582141-1a1d-41b6-ba3a-efa44ff7fd05\",\"sortFilesBy\":\"Date\",\"allowUpload\":false,\"uploadDisplayOption\":\"Name\",\"viewAll\":true,\"folderScore\":0.0,\"allowComments\":false,\"isTurnitinFolder\":false},{\"access\":{\"access_Full\":false,\"access_Read\":true,\"access_Create\":false,\"access_Update\":false,\"access_Delete\":false,\"access_Settings_Read\":false,\"access_Settings_Update\":false},\"id\":\"5a9525ba-e90c-44aa-a659-267bbf508d11\",\"createdDate\":\"2018-12-11T15:50:23.677+08:00\",\"creatorID\":\"07452470-15d3-49f5-b1ac-d1903644cdcc\",\"lastUpdatedDate\":\"2018-12-11T15:50:23.677+08:00\",\"lastUpdatedBy\":\"07452470-15d3-49f5-b1ac-d1903644cdcc\",\"name\":\"Lecture Notes\",\"startDate\":\"2018-12-11T15:50:03.927+08:00\",\"endDate\":\"2019-05-29T15:50:00+08:00\",\"publish\":true,\"parentID\":\"40582141-1a1d-41b6-ba3a-efa44ff7fd05\",\"rootID\":\"40582141-1a1d-41b6-ba3a-efa44ff7fd05\",\"sortFilesBy\":\"Date\",\"allowUpload\":false,\"uploadDisplayOption\":\"Name\",\"viewAll\":true,\"folderScore\":0.0,\"allowComments\":false,\"isTurnitinFolder\":false}]}",
+    "headers": [],
+    "status_code": 200
+  }
+}

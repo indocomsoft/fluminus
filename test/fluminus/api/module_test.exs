@@ -14,7 +14,7 @@ defmodule Fluminus.API.ModuleTest do
     valid?: true
   }
 
-  test("from_api") do
+  test "from_api" do
     assert Module.from_api(%{
              "id" => "57290e55-335a-4c09-b904-a795572d6cda",
              "name" => "CS1101S",
@@ -29,6 +29,9 @@ defmodule Fluminus.API.ModuleTest do
              },
              "term" => "1820"
            }).valid?
+  end
+
+  test "from_api filename sanitised" do
   end
 
   test "from_api invalid" do

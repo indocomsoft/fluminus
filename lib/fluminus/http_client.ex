@@ -43,8 +43,8 @@ defmodule Fluminus.HTTPClient do
   @doc """
   Performs a HTTP request.
 
-  Note that for flattened headers, in case there are some headers with the same key, the value will contain the value
-  of the last header with that key as returned by `HTTPoison`.
+  Note that for flattened headers, all the keys are converted to lowercase, and in case there are some headers with
+  the same key, the value will contain the value of the last header with that key as returned by `HTTPoison`.
   """
   @spec request(__MODULE__.t(), methods(), String.t(), String.t()) ::
           {:ok, __MODULE__.t(), flattened_headers(), HTTPoison.Response.t()}
@@ -56,7 +56,7 @@ defmodule Fluminus.HTTPClient do
     case HTTPoison.request(method, url, body, headers, recv_timeout: 10_000) do
       {:ok, response = %HTTPoison.Response{headers: headers}} ->
         updated_client = update_cookies(client, response)
-        flattened_headers = Map.new(headers)
+        flattened_headers = headers |> Enum.map(fn {key, value} -> {String.downcase(key), value} end) |> Map.new()
         {:ok, updated_client, flattened_headers, response}
 
       {:error, error} ->

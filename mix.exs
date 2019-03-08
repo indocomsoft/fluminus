@@ -43,6 +43,7 @@ defmodule Fluminus.MixProject do
       {:jason, "~> 1.1"},
       {:dialyxir, "~> 1.0.0-rc.4", only: :dev, runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
+      {:bypass, "~> 1.0", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
     ]

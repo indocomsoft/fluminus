@@ -36,11 +36,11 @@ defmodule Fluminus.Authorization do
   def jwt(username, password) when is_binary(username) and is_binary(password) do
     with {:ok, %{client: client}, login_uri, xsrf} <- auth_login_info(),
          body <- xsrf |> Map.merge(%{"username" => username, "password" => password}) |> URI.encode_query(),
-         {:ok, client, %{"Location" => location}, %{status_code: 302}} <- HTTPClient.post(client, login_uri, body),
-         {:ok, client, %{"Location" => location}, %{status_code: 302}} <- HTTPClient.get(client, location) do
+         {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.post(client, login_uri, body),
+         {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, location) do
       handle_callback(%__MODULE__{client: client}, location)
     else
-      {:ok, _, %{status_code: 200}} -> {:error, :invalid_credentials}
+      {:ok, _, _, %{status_code: 200}} -> {:error, :invalid_credentials}
       {:error, error} -> {:error, error}
     end
   end
@@ -57,7 +57,7 @@ defmodule Fluminus.Authorization do
   @spec renew_jwt(__MODULE__.t()) :: {:ok, __MODULE__.t()} | {:error, :invalid_authorization} | {:error, any()}
   def renew_jwt(auth = %__MODULE__{}) do
     with {:ok, %{client: client}, auth_uri} <- auth_endpoint_uri(auth),
-         {:ok, client, %{"Location" => location}, %{status_code: 302}} <- HTTPClient.get(client, auth_uri),
+         {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, auth_uri),
          {:ok, auth} <- handle_callback(%__MODULE__{client: client}, location) do
       {:ok, auth}
     else
@@ -84,7 +84,7 @@ defmodule Fluminus.Authorization do
   @spec auth_login_info :: {:ok, __MODULE__.t(), String.t(), map()} | {:error, :floki} | {:error, any()}
   defp auth_login_info do
     with {:ok, %{client: client}, auth_uri} <- auth_endpoint_uri(),
-         {:ok, client, %{"Location" => location}, %{status_code: 302}} <- HTTPClient.get(client, auth_uri),
+         {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, auth_uri),
          {:ok, client, _, %{status_code: 200, body: body}} <- HTTPClient.get(client, location),
          {:floki, [{_, _, [raw_json]}]} <- {:floki, Floki.find(body, "#modelJson")},
          {:ok, parsed} <- raw_json |> String.trim() |> HtmlEntities.decode() |> Jason.decode() do

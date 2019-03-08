@@ -1,7 +1,9 @@
 use Mix.Config
 
 config :fluminus,
-  auth_base_uri: "https://luminus.nus.edu.sg",
+  port: 8081,
+  fixtures_path: "test/fixtures/",
+  auth_base_uri: "http://localhost:8081",
   discovery_path: "/v2/auth/.well-known/openid-configuration",
   client_id: "verso",
   scope:

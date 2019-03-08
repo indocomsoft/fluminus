@@ -1,0 +1,29 @@
+{
+  "request": {
+    "method": "POST",
+    "body": {
+      "idsrv.xsrf": "c5An01lvFvFtvRuhR0PTHP-InX1_5WgOKufyWYuBr_vJz2jKB7AJKWgj7P6P5FFHjpb2gKCP5D9DbXvKoEG75atZjPYKkDADI6YTUEaCeZ0",
+      "password":"hunter2",
+      "username":"e0123456"
+    },
+    "request_path": "/v2/auth/login",
+    "cookies": {
+      "SignInMessage.bdb514e7096bff13e226cc67ea5ccf64": "yIWhp5nqCkQxooVxfzFCAKBCE9QHJ9Ifb0sMGk3RMkj1o9qmfxHSgXfr8FN8uOMgMiZM_Ame9xgkCHjVsx1hrDav4yhZcMkgjzbnuYcxAcMz6sTQ-xD_RoTl_SALM_sCFuKWo7H7eRn72Xxi0o7GvsTK9ZFzziNyytvn5RClNV4W_JfVBzgnslGIJB2n0ZJ999ZXjkStlBMtx1vkLwOpuqw22sVNXpHyRp28VCp29UpijAujl1aEORUKl4hxXLq6beTNwUIj8kF5cA9wWeNYZ7Enm8nPA6jrZDUaFV5_V8cJf1ghiRBmwz6taD08PK3zZMssAAuyEiBCQFhOgwnudv-JM1BypwJCxBNQBu1kO1nzh7MRi7tmhcf9xq-g5lIyW44cV4TRBB3Nt1kPX7eEaSM8yApRhrmmt1-n-pc-uK9kP0F-J4XbznXo4VCvATLvrKG7FEEl192yHFIHkwXdpMR88i0zcISRo7CTwDQWAHpbiNh4qZ0AoLjX5JkacaWr61AY2pisVTWsGY0mE6Fs20J4EqqwgrRYgKm6HLowcqQuZTEBlyI6enJSa15E5vkU5HE_chwOXmMcuy1MEZOLL_55_ArYazvjkxp9hBIKtoTIRh1bGTyhveMnBOI3FBeyESgWR0nJGh0MWt8SQNM6EL9nw_6KCAgnxKRs-Vl_9juo9vI_gCoUhs4Q-qgki_kB"
+    },
+    "query": {
+      "signin": "bdb514e7096bff13e226cc67ea5ccf64"
+    }
+  },
+  "response": {
+    "body": "",
+    "headers": [
+      ["Set-Cookie", "SignInMessage.2c646245efbf5d6a5825f68c5de375fa=.; path=/v2/auth; expires=Thu, 08-Mar-2018 08:43:04 GMT; HttpOnly"],
+      ["Set-Cookie", "idsvr.session=562df1af284a0081650a40487ca80398; path=/v2/auth"],
+      ["Set-Cookie", "idsrv.partial=; path=/v2/auth; expires=Thu, 01-Jan-1970 00:00:00 GMT"],
+      ["Set-Cookie", "idsrv.external=; path=/v2/auth; expires=Thu, 01-Jan-1970 00:00:00 GMT"],
+      ["Set-Cookie", "idsrv=Ywnb0vX7NMtrerdyfJsdSQmn5b0U44QTOxaQTazUU2plr9z3mZr_tXbxKQqwzHUEv14qZCkOu349j8JsTi8A7ePLpBi2l7CiVBvoV5lB6ufTBgamnp9_1dqxxZwg30VPC2sGvmlndzXo9Iz-LQK3FQi2sKNnW_MnokhKfmRI5rQszRIyxJl0fzr-sT9vTTH5FE8GK7mJ5oFTYpcsukHkEuZlfCmzA8SQ1wwOMzg3gr_KOpakzDgUsQrjubhedDWbkdIm0LpCSp4nWJdwO270mSZjrdf3MNSscIpCRRVvqb4MnaMvcBSgZTOjgm4YfDSgCyPVh4AKFaofuPYSwab2qq-ZqkbS7dRiGiCHBA62PiYoR8xm-QJor7XkqkQM_nxiGLBpvQeqF0J3z77H2Sgiwg; path=/v2/auth; HttpOnly"],
+      ["Location", "http://localhost:8081/v2/auth/connect/authorize?client_id=verso&redirect_uri=https%3A%2F%2Fluminus.nus.edu.sg%2Fauth%2Fcallback&response_type=id_token%20token%20code&scope=profile%20email%20role%20openid%20lms.read%20calendar.read%20lms.delete%20lms.write%20calendar.write%20gradebook.write%20offline_access&state=4efb0792cd644e9babf8539940c8393d&nonce=eb04cff7e8a84a34a9a9a4ab74e77166"]
+    ],
+    "status_code": 302
+  }
+}

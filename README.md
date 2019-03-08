@@ -13,8 +13,6 @@ I try to keep to best coding practices and use as little dependencies as possibl
 
 PR's are welcome.
 
-![demo](demo.gif)
-
 ## Installation
 ### As a dependency
 

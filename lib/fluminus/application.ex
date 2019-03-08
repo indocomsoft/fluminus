@@ -1,4 +1,9 @@
 defmodule Fluminus.Application do
+  @moduledoc """
+  The OTP Application part of Fluminus.
+
+  Used only to start the mock servers during testing.
+  """
   use Application
 
   def start(_type, args) do

@@ -1,4 +1,7 @@
 defmodule Fluminus.MockAuthorizationServer do
+  @moduledoc """
+  Mock Authorization Server emulating Luminus API server behaviour for testing.
+  """
   use Plug.Router
 
   alias Plug.Conn
@@ -6,7 +9,7 @@ defmodule Fluminus.MockAuthorizationServer do
   require Logger
 
   @fixtures_path Application.get_env(:fluminus, :fixtures_path) |> Path.join("authorization")
-  @cassettes Path.wildcard("#{@fixtures_path}/**/*.json") |> Enum.map(&File.read!/1) |> Enum.map(&Jason.decode!/1)
+  @cassettes "#{@fixtures_path}/**/*.json" |> Path.wildcard() |> Enum.map(&File.read!/1) |> Enum.map(&Jason.decode!/1)
 
   plug(Plug.Parsers,
     parsers: [:urlencoded, :json],

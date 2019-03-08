@@ -6,6 +6,7 @@ defmodule Fluminus.MixProject do
       app: :fluminus,
       version: "0.1.3",
       elixir: "~> 1.6",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       source_url: "https://github.com/indocomsoft/fluminus",
@@ -25,12 +26,20 @@ defmodule Fluminus.MixProject do
     ]
   end
 
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
+
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Fluminus.Application, [env: Mix.env()]},
+      applications: applications(Mix.env())
     ]
   end
+
+  def applications(:test), do: applications(:default) ++ [:cowboy, :plug, :httpoison]
+  def applications(_), do: []
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
@@ -43,8 +52,8 @@ defmodule Fluminus.MixProject do
       {:jason, "~> 1.1"},
       {:dialyxir, "~> 1.0.0-rc.4", only: :dev, runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:bypass, "~> 1.0", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
+      {:plug_cowboy, "~> 2.0", only: :test},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
     ]
   end

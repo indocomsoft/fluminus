@@ -1,0 +1,11 @@
+{
+  "request": {
+    "method": "GET",
+    "request_path": "/user/Profile"
+  },
+  "response": {
+    "body": "{\"id\":\"01234567-89ab-cdef-0123-456789abcdef\",\"userID\":\"e0123456\",\"userNameOriginal\":\"JOHN SMITH\",\"userMatricNo\":\"A0123456J\",\"userFaculty\":\"School of Computing\",\"title\":\"\",\"nickName\":\"\",\"mobileNo\":\"87654321\",\"email\":\"e0123456@u.nus.edu\",\"displayPhoto\":false}",
+    "headers": [],
+    "status_code": 200
+  }
+}

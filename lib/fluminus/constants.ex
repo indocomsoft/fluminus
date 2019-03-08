@@ -1,4 +1,6 @@
 defmodule Fluminus.Constants do
+  @moduledoc false
+
   def ocm_apim_subscription_key(_), do: "6963c200ca9440de8fa1eede730d8f7e"
 
   def api_base_url(:test), do: "http://localhost:8082"

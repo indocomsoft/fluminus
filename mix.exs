@@ -4,7 +4,7 @@ defmodule Fluminus.MixProject do
   def project do
     [
       app: :fluminus,
-      version: "0.2.1",
+      version: "0.2.2",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -59,7 +59,7 @@ defmodule Fluminus.MixProject do
   end
 
   defp description do
-    "A client for the reverse-engineered LumiNUS API (https://luminus.nus.edu.sg)"
+    "A library for the reverse-engineered LumiNUS API (https://luminus.nus.edu.sg)"
   end
 
   defp package() do

@@ -12,7 +12,7 @@ defmodule Fluminus.API.File do
   * `:allow_upload?` - whether this is a student submission folder.
   """
 
-  alias Fluminus.{API, Authorization}
+  alias Fluminus.{API, Authorization, HTTPClient}
   alias Fluminus.API.Module
 
   @type t :: %__MODULE__{
@@ -79,34 +79,11 @@ defmodule Fluminus.API.File do
 
     with {:exists?, false} <- {:exists?, File.exists?(destination)},
          url <- get_download_url(file, auth),
-         {:ok, file} <- File.open(destination, [:write]),
-         {:ok, response} = HTTPoison.get(url, [], stream_to: self(), async: :once),
-         :ok <- download_loop(response, file),
-         :ok <- File.close(file) do
+         :ok <- HTTPClient.download(%HTTPClient{}, url, destination) do
       :ok
     else
       {:exists?, true} -> {:error, :exists}
       {:error, reason} -> {:error, reason}
-    end
-  end
-
-  defp download_loop(response = %HTTPoison.AsyncResponse{id: id}, file) do
-    receive do
-      %HTTPoison.AsyncStatus{code: 200, id: ^id} ->
-        HTTPoison.stream_next(response)
-        download_loop(response, file)
-
-      %HTTPoison.AsyncHeaders{id: ^id} ->
-        HTTPoison.stream_next(response)
-        download_loop(response, file)
-
-      %HTTPoison.AsyncChunk{chunk: chunk, id: ^id} ->
-        IO.binwrite(file, chunk)
-        HTTPoison.stream_next(response)
-        download_loop(response, file)
-
-      %HTTPoison.AsyncEnd{id: ^id} ->
-        :ok
     end
   end
 

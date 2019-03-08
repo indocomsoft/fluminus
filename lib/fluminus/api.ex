@@ -12,6 +12,7 @@ defmodule Fluminus.API do
 
   alias Fluminus.API.Module
   alias Fluminus.Authorization
+  alias Fluminus.HTTPClient
 
   @doc """
   Returns the name of the user with the given authorization.
@@ -148,10 +149,10 @@ defmodule Fluminus.API do
 
     uri = full_api_uri(path)
 
-    case HTTPoison.request(method, uri, body, headers) do
-      {:ok, %{status_code: 200, body: body}} -> Jason.decode(body)
-      {:ok, %{status_code: 401}} -> {:error, :expired_token}
-      {:ok, response} -> {:error, {:unexpected_content, response}}
+    case HTTPClient.request(%HTTPClient{}, method, uri, body, headers) do
+      {:ok, _, _, %{status_code: 200, body: body}} -> Jason.decode(body)
+      {:ok, _, _, %{status_code: 401}} -> {:error, :expired_token}
+      {:ok, _, _, response} -> {:error, {:unexpected_content, response}}
       {:error, error} -> {:error, error}
     end
   end

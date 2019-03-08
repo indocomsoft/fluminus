@@ -5,7 +5,6 @@ defmodule Fluminus.HTTPClient do
   Struct fields:
   * `:cookies` - cookies stored by this HTTP client.
 
-
   `flattened_headers()` is all the header keys converted to lowercase, and in case there are some headers with
   the same key, the value will contain the value of the last header with that key as returned by `HTTPoison`.
   """

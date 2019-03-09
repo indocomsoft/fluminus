@@ -22,7 +22,8 @@ defmodule Fluminus.MixProject do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test
-      ]
+      ],
+      dialyzer: [plt_add_apps: [:cookie, :floki, :jason, :html_entities, :html_sanitize_ex]]
     ]
   end
 

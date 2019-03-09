@@ -81,7 +81,7 @@ defmodule Fluminus.HTTPClient do
          :ok <- File.close(file) do
       :ok
     else
-      {:overwrite?, true} -> {:error, :exists}
+      {:overwrite?, false} -> {:error, :exists}
       {:error, reason} -> {:error, reason}
     end
   end

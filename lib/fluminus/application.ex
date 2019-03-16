@@ -13,8 +13,8 @@ defmodule Fluminus.Application do
       case args do
         [env: :test] ->
           [
-            {Plug.Cowboy, scheme: :http, plug: Fluminus.MockAuthorizationServer, options: [port: 8081]},
-            {Plug.Cowboy, scheme: :http, plug: Fluminus.MockAPIServer, options: [port: 8082]}
+            Plug.Cowboy.child_spec(scheme: :http, plug: Fluminus.MockAuthorizationServer, options: [port: 8081]),
+            Plug.Cowboy.child_spec(scheme: :http, plug: Fluminus.MockAPIServer, options: [port: 8082])
           ]
 
         [_] ->

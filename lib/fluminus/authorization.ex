@@ -21,8 +21,30 @@ defmodule Fluminus.Authorization do
   defstruct jwt: nil, client: %HTTPClient{}
 
   @doc """
+  Creates a new `#{__MODULE__}` struct containing the given JWT and refresh token.
+  """
+  @spec new(String.t(), String.t()) :: __MODULE__.t()
+  def new(jwt, refresh_token) when is_binary(jwt) and is_binary(refresh_token) do
+    %__MODULE__{jwt: jwt, client: %HTTPClient{cookies: %{"idsrv" => refresh_token}}}
+  end
+
+  @doc """
+  Obtains the JWT from a `#{__MODULE__}` struct. Note that the JWT is valid only for 30 minutes.
+  """
+  @spec get_jwt(__MODULE__.t()) :: String.t() | nil
+  def get_jwt(%__MODULE__{jwt: jwt}), do: jwt
+
+  @doc """
+  Obtains the refresh token from a `#{__MODULE__}` struct. Note that the refresh token is valid only for 24 hours.
+  """
+  @spec get_refresh_token(__MODULE__.t()) :: String.t() | nil
+  def get_refresh_token(%__MODULE__{client: %HTTPClient{cookies: %{"idsrv" => refresh_token}}}), do: refresh_token
+
+  def get_refresh_token(%__MODULE__{}), do: nil
+
+  @doc """
   Obtains a `#{__MODULE__}` struct containing JWT required for authorization and cookies to refresh JWT.
-  Please note that the JWT is usually only valid for 1 hour, and the cookies for 24 hours.
+  Please note that the JWT is only valid for 30 minutes, and the refresh token for 24 hours.
 
   `username` is the username of your NUSNET account (in the format of e0123456).
   `password` is the password of your NUSNET account.

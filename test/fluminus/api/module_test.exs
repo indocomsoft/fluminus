@@ -14,21 +14,21 @@ defmodule Fluminus.API.ModuleTest do
   }
 
   test "from_api" do
-    {:ok, _} =
-      Module.from_api(%{
-        "id" => "57290e55-335a-4c09-b904-a795572d6cda",
-        "name" => "CS1101S",
-        "courseName" => "Programming Methodology",
-        "access" => %{
-          "access_Full" => true,
-          "access_Create" => true,
-          "access_Update" => true,
-          "access_Delete" => true,
-          "access_Settings_Read" => true,
-          "access_Settings_Update" => true
-        },
-        "term" => "1820"
-      })
+    assert {:ok, _} =
+             Module.from_api(%{
+               "id" => "57290e55-335a-4c09-b904-a795572d6cda",
+               "name" => "CS1101S",
+               "courseName" => "Programming Methodology",
+               "access" => %{
+                 "access_Full" => true,
+                 "access_Create" => true,
+                 "access_Update" => true,
+                 "access_Delete" => true,
+                 "access_Settings_Read" => true,
+                 "access_Settings_Update" => true
+               },
+               "term" => "1820"
+             })
   end
 
   test "from_api invalid" do
@@ -61,24 +61,33 @@ defmodule Fluminus.API.ModuleTest do
     assert {:ok,
             [
               %{
+                description:
+                  "Dear All,\n\n \n\nThe midterm seating plan is now uploaded in the folder lecture_notes.\n\n \n\nKind Regards,\n\n \n\nA/P Ajay Jasra\n",
                 title: "Mid Term Seating Plan",
-                description:
-                  "Dear All,\n\n \n\nThe midterm seating plan is now uploaded in the folder lecture_notes.\n\n \n\nKind Regards,\n\n \n\nA/P Ajay Jasra\n"
+                datetime: datetime_from_iso8601!("2019-03-07 05:29:02.847Z")
               },
               %{
+                description:
+                  "Dear All,\n\n \n\nThese have been added to `lecture notes'. I will quickly cover how to use these in our next lecture.\n\n \n\nKind Regards,\n\n \n\nA/P Ajay Jasra\n",
                 title: "Gaussian CDF and Quantile Tables",
-                description:
-                  "Dear All,\n\n \n\nThese have been added to `lecture notes'. I will quickly cover how to use these in our next lecture.\n\n \n\nKind Regards,\n\n \n\nA/P Ajay Jasra\n"
+                datetime: datetime_from_iso8601!("2019-02-26 03:44:37.287Z")
               },
               %{
-                title: "Mid Term",
                 description:
-                  "Date/Time/Venue\nThe mid-semester test will be held on 12th Mar, Tuesday from 2000hrs to 2100 hrs in MPSH2.\n\nTest details\nScope of test -- Chapters: 1 to 2\n\nSeveral multiple choice questions and some short questions, attempt all. Duration: 60 mins.\n \nOthers\nYou are allowed to bring along with you ONE piece of A4 size, two-sided help sheet.\nProgrammable/graphical/scientific calculators are allowed.\n \nMake-up test Policy\nIf you miss the test due to illness, you will be allowed to take a make-up test provided you have a valid medical certificate for the day of test.\nContact me within 24 hrs after the test.\n\nYou will be notified of the details of the make-up test (to be held during week 13) via your NUS email.\n \nShould for any other reason you are not able to take the test, contact me ahead of time before the test (if it is possible). Legitimate reasons include:\n\n\n\tBereavement of immediate family member and burial or cremation takes place on same day and time as test;\n\tStudent is affected by serious trauma caused by crime, accidents or disasters (e.g. fire);\n\tStudent is officially representing the country in an official international competition in which the student has no control over the actual dates of the competition; and\n\tStudent is representing NUS at NUS-recognised University-level competitions, i.e. Universiade (World University Games), AseanUniversity Games and IndianRimAsianUniversity Games (IRAUG).\n\tInvolvement in University level performances. i.e. concerts, plays.\n\n\nNote that Hall activities or driving tests are not considered valid non-medical reasons for missing CA tests.\n"
+                  "Date/Time/Venue\nThe mid-semester test will be held on 12th Mar, Tuesday from 2000hrs to 2100 hrs in MPSH2.\n\nTest details\nScope of test -- Chapters: 1 to 2\n\nSeveral multiple choice questions and some short questions, attempt all. Duration: 60 mins.\n \nOthers\nYou are allowed to bring along with you ONE piece of A4 size, two-sided help sheet.\nProgrammable/graphical/scientific calculators are allowed.\n \nMake-up test Policy\nIf you miss the test due to illness, you will be allowed to take a make-up test provided you have a valid medical certificate for the day of test.\nContact me within 24 hrs after the test.\n\nYou will be notified of the details of the make-up test (to be held during week 13) via your NUS email.\n \nShould for any other reason you are not able to take the test, contact me ahead of time before the test (if it is possible). Legitimate reasons include:\n\n\n\tBereavement of immediate family member and burial or cremation takes place on same day and time as test;\n\tStudent is affected by serious trauma caused by crime, accidents or disasters (e.g. fire);\n\tStudent is officially representing the country in an official international competition in which the student has no control over the actual dates of the competition; and\n\tStudent is representing NUS at NUS-recognised University-level competitions, i.e. Universiade (World University Games), AseanUniversity Games and IndianRimAsianUniversity Games (IRAUG).\n\tInvolvement in University level performances. i.e. concerts, plays.\n\n\nNote that Hall activities or driving tests are not considered valid non-medical reasons for missing CA tests.\n",
+                title: "Mid Term",
+                datetime: datetime_from_iso8601!("2019-02-14 07:49:49.227Z")
               }
-            ]} = Module.announcements(@module, @authorization)
+            ]} ==
+             Module.announcements(@module, @authorization)
   end
 
   test "announcements archived" do
-    assert {:ok, []} = Module.announcements(@module, @authorization, true)
+    assert {:ok, []} == Module.announcements(@module, @authorization, true)
+  end
+
+  defp datetime_from_iso8601!(string) when is_binary(string) do
+    {:ok, datetime, _} = DateTime.from_iso8601(string)
+    datetime
   end
 end

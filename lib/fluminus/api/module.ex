@@ -51,13 +51,22 @@ defmodule Fluminus.API.Module do
   we should never need to access archived announcements.
   """
   @spec announcements(__MODULE__.t(), Authorization.t(), bool()) ::
-          {:ok, [%{title: String.t(), description: String.t()}]} | {:error, any()}
+          {:ok, [%{title: String.t(), description: String.t(), datetime: DateTime.t()}]} | {:error, any()}
   def announcements(%__MODULE__{id: id}, auth = %Authorization{}, archived \\ false) do
     uri = "/announcement/#{if archived, do: "Archived", else: "NonArchived"}/#{id}?sortby=displayFrom%20ASC"
 
     case API.api(auth, uri) do
       {:ok, %{"data" => data}} ->
-        {:ok, Enum.map(data, &%{title: &1["title"], description: HtmlSanitizeEx.strip_tags(&1["description"])})}
+        {:ok,
+         Enum.map(data, fn %{"title" => title, "description" => description, "displayFrom" => datetime} ->
+           datetime =
+             case DateTime.from_iso8601(datetime) do
+               {:ok, datetime, _} -> datetime
+               {:error, _} -> nil
+             end
+
+           %{title: title, description: HtmlSanitizeEx.strip_tags(description), datetime: datetime}
+         end)}
 
       {:ok, response} ->
         {:error, {:unexpected_response, response}}

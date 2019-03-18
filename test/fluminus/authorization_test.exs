@@ -24,4 +24,20 @@ defmodule Fluminus.AuthorizationTest do
 
     assert auth.jwt == @renew_id_token
   end
+
+  test "new" do
+    auth = Authorization.new(@id_token, @idsrv)
+    assert auth.jwt == @id_token
+    assert auth.client.cookies["idsrv"] == @idsrv
+  end
+
+  test "get_jwt" do
+    auth = Authorization.new(@id_token, @idsrv)
+    assert Authorization.get_jwt(auth) == @id_token
+  end
+
+  test "get_refresh_token" do
+    auth = Authorization.new(@id_token, @idsrv)
+    assert Authorization.get_refresh_token(auth) == @idsrv
+  end
 end

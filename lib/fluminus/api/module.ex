@@ -44,7 +44,7 @@ defmodule Fluminus.API.Module do
   def from_api(_api_response), do: :error
 
   @doc """
-  Returns a list of `{announcement_title, announcement_content}` for a given module.
+  Returns a list of announcements for a given module.
 
   The LumiNUS API provides 2 separate endpoints for archived and non-archived announcements. By default,
   announcements are archived after roughly 16 weeks (hence, the end of the semester) so most of the times,

@@ -11,8 +11,7 @@ defmodule Fluminus.API.FileTest do
     id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
     name: "Probability and Statistics",
     teaching?: false,
-    term: "1820",
-    valid?: true
+    term: "1820"
   }
   @sample_file %File{
     allow_upload?: false,
@@ -32,47 +31,53 @@ defmodule Fluminus.API.FileTest do
   end
 
   test "from_module" do
-    assert File.from_module(@module, @authorization) == %File{
-             allow_upload?: false,
-             children: [
+    assert {:ok, file} = File.from_module(@module, @authorization)
+
+    assert file ==
+             %File{
+               allow_upload?: false,
+               children: [
+                 %File{
+                   allow_upload?: false,
+                   children: nil,
+                   directory?: true,
+                   id: "7c464b62-3811-4c87-b1d1-7407e6ec321b",
+                   name: "Tutorial Questions"
+                 },
+                 %File{
+                   allow_upload?: false,
+                   children: nil,
+                   directory?: true,
+                   id: "5a9525ba-e90c-44aa-a659-267bbf508d11",
+                   name: "Lecture Notes"
+                 }
+               ],
+               directory?: true,
+               id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
+               name: "ST2334"
+             }
+  end
+
+  test "from_module filename sanitised" do
+    module = %Fluminus.API.Module{@module | code: "CS1231/MA1100"}
+    assert {:ok, file} = File.from_module(module, @authorization)
+    assert file.name == "CS1231-MA1100"
+  end
+
+  test "load_children directory allow_upload prepends with creator name" do
+    assert {:ok, file} =
+             File.load_children(
                %File{
-                 allow_upload?: false,
+                 allow_upload?: true,
                  children: nil,
                  directory?: true,
                  id: "7c464b62-3811-4c87-b1d1-7407e6ec321b",
                  name: "Tutorial Questions"
                },
-               %File{
-                 allow_upload?: false,
-                 children: nil,
-                 directory?: true,
-                 id: "5a9525ba-e90c-44aa-a659-267bbf508d11",
-                 name: "Lecture Notes"
-               }
-             ],
-             directory?: true,
-             id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
-             name: "ST2334"
-           }
-  end
+               @authorization
+             )
 
-  test "from_module filename sanitised" do
-    module = %Fluminus.API.Module{@module | code: "CS1231/MA1100"}
-
-    assert File.from_module(module, @authorization).name == "CS1231-MA1100"
-  end
-
-  test "load_children directory allow_upload prepends with creator name" do
-    assert File.load_children(
-             %File{
-               allow_upload?: true,
-               children: nil,
-               directory?: true,
-               id: "7c464b62-3811-4c87-b1d1-7407e6ec321b",
-               name: "Tutorial Questions"
-             },
-             @authorization
-           ).children == [
+    assert file.children == [
              %File{
                allow_upload?: false,
                children: [],
@@ -189,16 +194,19 @@ defmodule Fluminus.API.FileTest do
   end
 
   test "load_children directory" do
-    assert File.load_children(
-             %File{
-               allow_upload?: false,
-               children: nil,
-               directory?: true,
-               id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
-               name: "ST2334"
-             },
-             @authorization
-           ).children == [
+    assert {:ok, file} =
+             File.load_children(
+               %File{
+                 allow_upload?: false,
+                 children: nil,
+                 directory?: true,
+                 id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
+                 name: "ST2334"
+               },
+               @authorization
+             )
+
+    assert file.children == [
              %File{
                allow_upload?: false,
                children: nil,
@@ -217,39 +225,45 @@ defmodule Fluminus.API.FileTest do
   end
 
   test "load_children file" do
-    assert File.load_children(
-             %File{
-               allow_upload?: false,
-               children: nil,
-               directory?: false,
-               id: "731db9ba-b919-4614-928c-1ac7d4172b3c",
-               name: "Tut1.docx"
-             },
-             @authorization
-           ).children == []
+    assert {:ok, file} =
+             File.load_children(
+               %File{
+                 allow_upload?: false,
+                 children: nil,
+                 directory?: false,
+                 id: "731db9ba-b919-4614-928c-1ac7d4172b3c",
+                 name: "Tut1.docx"
+               },
+               @authorization
+             )
+
+    assert file.children == []
   end
 
   test "load_children already_loaded" do
-    assert File.load_children(
-             %File{
-               allow_upload?: false,
-               children: [],
-               directory?: false,
-               id: "731db9ba-b919-4614-928c-1ac7d4172b3c",
-               name: "Tut1.docx"
-             },
-             @authorization
-           ).children == []
+    assert {:ok, file} =
+             File.load_children(
+               %File{
+                 allow_upload?: false,
+                 children: [],
+                 directory?: false,
+                 id: "731db9ba-b919-4614-928c-1ac7d4172b3c",
+                 name: "Tut1.docx"
+               },
+               @authorization
+             )
+
+    assert file.children == []
   end
 
   test "get_download_url" do
-    assert File.get_download_url(@sample_file, @authorization) ==
-             "http://localhost:8082/v2/api/files/download/6f3cfb8c-5b91-4d5a-849a-70dcb31eea87"
+    assert {:ok, "http://localhost:8082/v2/api/files/download/6f3cfb8c-5b91-4d5a-849a-70dcb31eea87"} =
+             File.get_download_url(@sample_file, @authorization)
   end
 
   test "download" do
-    :ok = File.download(@sample_file, @authorization, @temp_dir)
+    assert :ok = File.download(@sample_file, @authorization, @temp_dir)
     assert @temp_dir |> Path.join(@sample_file.name) |> Elixir.File.read!() == "This is just a sample file.\n"
-    {:error, :exists} = File.download(@sample_file, @authorization, @temp_dir)
+    assert {:error, :exists} = File.download(@sample_file, @authorization, @temp_dir)
   end
 end

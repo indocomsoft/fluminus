@@ -9,7 +9,6 @@ defmodule Fluminus.API.Module do
   * `:name` - name of the module, e.g. `"Programming Methodology"`
   * `:teaching?` - `true` if the user is teaching the module, `false` if the user is taking the module
   * `:term` - a string identifier used by the LumiNUS API to uniquely identify a term (semester), e.g. `"1820"`
-  * `:valid?` - whether the struct should be considered valid. `false` if the parameter to `#{__MODULE__}.from_api/1`
   is invalid
   """
 
@@ -22,29 +21,27 @@ defmodule Fluminus.API.Module do
           code: String.t(),
           name: String.t(),
           teaching?: bool(),
-          term: String.t(),
-          valid?: bool()
+          term: String.t()
         }
-  @enforce_keys [:valid?]
-  defstruct ~w(id code name teaching? term valid?)a
+  defstruct ~w(id code name teaching? term)a
 
   @doc """
   Creates `#{__MODULE__}` struct from LumiNUS API response.
   """
-  @spec from_api(any()) :: __MODULE__.t()
+  @spec from_api(any()) :: {:ok, __MODULE__.t()} | :error
   def from_api(_api_response = %{"id" => id, "name" => code, "courseName" => name, "access" => access, "term" => term})
       when is_binary(id) and is_binary(code) and is_binary(name) and is_binary(term) and is_map(access) do
-    %__MODULE__{
-      id: id,
-      code: code,
-      name: name,
-      teaching?: Enum.any?(@teacher_access, &access[&1]),
-      term: term,
-      valid?: true
-    }
+    {:ok,
+     %__MODULE__{
+       id: id,
+       code: code,
+       name: name,
+       teaching?: Enum.any?(@teacher_access, &access[&1]),
+       term: term
+     }}
   end
 
-  def from_api(_api_response), do: %__MODULE__{valid?: false}
+  def from_api(_api_response), do: :error
 
   @doc """
   Returns a list of `{announcement_title, announcement_content}` for a given module.
@@ -53,10 +50,20 @@ defmodule Fluminus.API.Module do
   announcements are archived after roughly 16 weeks (hence, the end of the semester) so most of the times,
   we should never need to access archived announcements.
   """
-  @spec announcements(__MODULE__.t(), Authorization.t(), bool()) :: [{String.t(), String.t()}]
+  @spec announcements(__MODULE__.t(), Authorization.t(), bool()) ::
+          {:ok, [%{title: String.t(), description: String.t()}]} | {:error, any()}
   def announcements(%__MODULE__{id: id}, auth = %Authorization{}, archived \\ false) do
     uri = "/announcement/#{if archived, do: "Archived", else: "NonArchived"}/#{id}?sortby=displayFrom%20ASC"
-    {:ok, %{"data" => data}} = API.api(auth, uri)
-    Enum.map(data, &{&1["title"], HtmlSanitizeEx.strip_tags(&1["description"])})
+
+    case API.api(auth, uri) do
+      {:ok, %{"data" => data}} ->
+        {:ok, Enum.map(data, &%{title: &1["title"], description: HtmlSanitizeEx.strip_tags(&1["description"])})}
+
+      {:ok, response} ->
+        {:error, {:unexpected_response, response}}
+
+      {:error, error} ->
+        {:error, error}
+    end
   end
 end

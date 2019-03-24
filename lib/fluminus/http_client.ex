@@ -5,14 +5,17 @@ defmodule Fluminus.HTTPClient do
   Struct fields:
   * `:cookies` - cookies stored by this HTTP client.
 
-  `flattened_headers()` is all the header keys converted to lowercase, and in case there are some headers with
-  the same key, the value will contain the value of the last header with that key as returned by `HTTPoison`.
   """
 
   @supported_methods ~w(get post)a
   @type methods() :: :get | :post
 
+  @typedoc """
+  All the header keys converted to lowercase, and in case there are some headers with
+  the same key, the value will contain the value of the last header with that key as returned by `HTTPoison`.
+  """
   @type flattened_headers() :: %{required(String.t()) => String.t()}
+
   @type headers() :: [{String.t(), String.t()}]
 
   @type t :: %__MODULE__{cookies: %{required(String.t()) => String.t()}}

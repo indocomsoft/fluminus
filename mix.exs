@@ -46,7 +46,7 @@ defmodule Fluminus.MixProject do
   defp deps do
     [
       {:cookie, "~> 0.1.1"},
-      {:floki, "~> 0.20.0"},
+      {:floki, "~> 0.21.0"},
       {:html_entities, "~> 0.4"},
       {:html_sanitize_ex, "~> 1.3.0"},
       {:httpoison, "~> 1.4"},

@@ -18,7 +18,7 @@ defmodule Fluminus.Authorization do
 
   @ocm_apim_subscription_key Fluminus.Constants.ocm_apim_subscription_key(Mix.env())
   @resource "sg_edu_nus_oauth"
-  @client_id "E10493A3B1024F14BDC7D0D8B9F649E9-234390"
+  @vafs_client_id "E10493A3B1024F14BDC7D0D8B9F649E9-234390"
 
   alias Fluminus.HTTPClient
 
@@ -84,7 +84,7 @@ defmodule Fluminus.Authorization do
     query =
       URI.encode_query(%{
         "response_type" => "code",
-        "client_id" => @client_id,
+        "client_id" => @vafs_client_id,
         "redirect_uri" => @redirect_uri,
         "resource" => @resource
       })
@@ -100,7 +100,7 @@ defmodule Fluminus.Authorization do
          adfs_body <-
            URI.encode_query(%{
              "grant_type" => "authorization_code",
-             "client_id" => @client_id,
+             "client_id" => @vafs_client_id,
              "resource" => @resource,
              "redirect_uri" => @redirect_uri,
              "code" => code

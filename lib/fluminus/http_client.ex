@@ -57,10 +57,10 @@ defmodule Fluminus.HTTPClient do
     headers = generate_headers(client, headers)
 
     case HTTPoison.request(method, url, body, headers, recv_timeout: 10_000) do
-      {:ok, response = %HTTPoison.Response{headers: headers}} ->
+      {:ok, response = %HTTPoison.Response{body: body, headers: headers}} ->
         updated_client = update_cookies(client, response)
         flattened_headers = headers |> Enum.map(fn {key, value} -> {String.downcase(key), value} end) |> Map.new()
-        {:ok, updated_client, flattened_headers, response}
+        {:ok, updated_client, flattened_headers, response, body}
 
       {:error, error} ->
         {:error, error}

@@ -6,7 +6,7 @@ defmodule Fluminus.API do
   """
 
   @api_base_url Fluminus.Constants.api_base_url(Mix.env())
-  @ocm_apim_subscription_key "6963c200ca9440de8fa1eede730d8f7e"
+  @ocm_apim_subscription_key Fluminus.Constants.ocm_apim_subscription_key(Mix.env())
 
   @type headers() :: [{String.t(), String.t()}]
 

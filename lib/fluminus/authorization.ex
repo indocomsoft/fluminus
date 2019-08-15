@@ -9,11 +9,16 @@ defmodule Fluminus.Authorization do
   """
 
   @auth_base_uri Fluminus.Constants.auth_base_uri(Mix.env())
+  @api_base_uri Fluminus.Constants.api_base_url(Mix.env())
   @discovery_path "/v2/auth/.well-known/openid-configuration"
   @client_id "verso"
   @scope "profile email role openid lms.read calendar.read lms.delete lms.write calendar.write gradebook.write offline_access"
   @response_type "id_token token code"
   @redirect_uri "https://luminus.nus.edu.sg/auth/callback"
+
+  @ocm_apim_subscription_key Fluminus.Constants.ocm_apim_subscription_key(Mix.env())
+  @resource "sg_edu_nus_oauth"
+  @client_id "E10493A3B1024F14BDC7D0D8B9F649E9-234390"
 
   alias Fluminus.HTTPClient
 
@@ -66,11 +71,49 @@ defmodule Fluminus.Authorization do
   def jwt(username, password) when is_binary(username) and is_binary(password) do
     with {:ok, %{client: client}, login_uri, xsrf} <- auth_login_info(),
          body <- xsrf |> Map.merge(%{"username" => username, "password" => password}) |> URI.encode_query(),
-         {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.post(client, login_uri, body),
-         {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, location) do
+         {:ok, client, %{"location" => location}, %{status_code: 302}, _} <- HTTPClient.post(client, login_uri, body),
+         {:ok, client, %{"location" => location}, %{status_code: 302}, _} <- HTTPClient.get(client, location) do
       handle_callback(%__MODULE__{client: client}, location)
     else
       {:ok, _, _, %{status_code: 200}} -> {:error, :invalid_credentials}
+      {:error, error} -> {:error, error}
+    end
+  end
+
+  def vafs_jwt(username, password) when is_binary(username) and is_binary(password) do
+    query =
+      URI.encode_query(%{
+        "response_type" => "code",
+        "client_id" => @client_id,
+        "redirect_uri" => @redirect_uri,
+        "resource" => @resource
+      })
+
+    body = URI.encode_query(%{"UserName" => username, "Password" => password, "AuthMethod" => "FormsAuthentication"})
+
+    uri = URI.parse("https://vafs.nus.edu.sg/adfs/oauth2/authorize") |> Map.put(:query, query) |> URI.to_string()
+
+    with {:ok, client, %{"location" => location}, %{status_code: 302}, _} <- HTTPClient.post(%HTTPClient{}, uri, body),
+         {:ok, client, %{"location" => location}, %{status_code: 302}, _} <- HTTPClient.get(client, location),
+         %{query: query} <- URI.parse(location),
+         %{"code" => code} <- URI.decode_query(query),
+         adfs_body <-
+           URI.encode_query(%{
+             "grant_type" => "authorization_code",
+             "client_id" => @client_id,
+             "resource" => @resource,
+             "redirect_uri" => @redirect_uri,
+             "code" => code
+           }),
+         {:ok, %HTTPClient{cookies: cookies}, _, %{status_code: 200}, adfs_token_result} <-
+           HTTPClient.post(client, "#{@api_base_uri}/login/adfstoken", adfs_body, [
+             {"Ocp-Apim-Subscription-Key", @ocm_apim_subscription_key},
+             {"Content-Type", "application/x-www-form-urlencoded"}
+           ]),
+         {:ok, %{"access_token" => access_token}} <- Jason.decode(adfs_token_result) do
+      {:ok, %__MODULE__{jwt: access_token, client: %HTTPClient{cookies: cookies}}}
+    else
+      {:ok, _, _, %{status_code: 200}, _} -> {:error, :invalid_credentials}
       {:error, error} -> {:error, error}
     end
   end
@@ -87,7 +130,7 @@ defmodule Fluminus.Authorization do
   @spec renew_jwt(__MODULE__.t()) :: {:ok, __MODULE__.t()} | {:error, :invalid_authorization} | {:error, any()}
   def renew_jwt(auth = %__MODULE__{}) do
     with {:ok, %{client: client}, auth_uri} <- auth_endpoint_uri(auth),
-         {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, auth_uri),
+         {:ok, client, %{"location" => location}, %{status_code: 302}, _} <- HTTPClient.get(client, auth_uri),
          {:ok, auth} <- handle_callback(%__MODULE__{client: client}, location) do
       {:ok, auth}
     else
@@ -114,8 +157,8 @@ defmodule Fluminus.Authorization do
   @spec auth_login_info :: {:ok, __MODULE__.t(), String.t(), map()} | {:error, :floki} | {:error, any()}
   defp auth_login_info do
     with {:ok, %{client: client}, auth_uri} <- auth_endpoint_uri(),
-         {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, auth_uri),
-         {:ok, client, _, %{status_code: 200, body: body}} <- HTTPClient.get(client, location),
+         {:ok, client, %{"location" => location}, %{status_code: 302}, _} <- HTTPClient.get(client, auth_uri),
+         {:ok, client, _, %{status_code: 200, body: body}, _} <- HTTPClient.get(client, location),
          {:floki, [{_, _, [raw_json]}]} <- {:floki, Floki.find(body, "#modelJson")},
          {:ok, parsed} <- raw_json |> String.trim() |> HtmlEntities.decode() |> Jason.decode() do
       full_login_uri = full_auth_uri(parsed["loginUrl"])
@@ -132,7 +175,7 @@ defmodule Fluminus.Authorization do
   defp auth_endpoint_uri(%__MODULE__{client: client} \\ %__MODULE__{}) do
     full_uri = full_auth_uri(@discovery_path)
 
-    with {:ok, client, _, %{status_code: 200, body: body}} <- HTTPClient.get(client, full_uri),
+    with {:ok, client, _, %{status_code: 200, body: body}, _} <- HTTPClient.get(client, full_uri),
          {:ok, %{"authorization_endpoint" => uri}} <- Jason.decode(body),
          uri_with_params <- auth_endpoint_uri_with_params(uri) do
       {:ok, %__MODULE__{client: client}, uri_with_params}

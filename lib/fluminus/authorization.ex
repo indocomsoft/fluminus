@@ -115,6 +115,7 @@ defmodule Fluminus.Authorization do
     else
       {:ok, _, _, %{status_code: 200}} -> {:error, :invalid_credentials}
       {:error, error} -> {:error, error}
+      x when is_map(x) -> {:error, :no_code_in_query}
     end
   end
 

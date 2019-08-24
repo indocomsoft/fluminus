@@ -114,7 +114,8 @@ defmodule Fluminus.HTTPClient do
 
   @spec generate_headers(__MODULE__.t(), headers()) :: headers()
   defp generate_headers(%__MODULE__{cookies: cookies}, headers) do
-    cookies_string = Cookie.serialize(cookies)
+    # Why does Cookie.seralize use commas as separator
+    cookies_string = cookies |> Cookie.serialize() |> String.replace(", ", "; ")
 
     headers ++
       if(cookies_string != "", do: [{"Cookie", cookies_string}], else: [])

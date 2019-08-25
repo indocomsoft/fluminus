@@ -1,12 +1,12 @@
 defmodule Fluminus.API.Module.Weblecture do
   @moduledoc """
-  Provides an abstraction over a weblecture in LumiNUS, and operations possible on them using]
+  Provides an abstraction over a weblecture in LumiNUS, and operations possible on them using
   LumiNUS API.
 
   Struct fields:
   * `:id` - id of the weblecture
   * `:name` - name of the weblecture
-  * `:module_id` - the module_if to which the weblecture is from.
+  * `:module_id` - the module_id to which the weblecture is from.
   """
 
   defstruct ~w(module_id id name)a

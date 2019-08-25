@@ -12,7 +12,7 @@ defmodule Fluminus.API.File do
   * `:allow_upload?` - whether this is a student submission folder.
   """
 
-  alias Fluminus.{API, Authorization, HTTPClient}
+  alias Fluminus.{API, Authorization, Util}
   alias Fluminus.API.Module
 
   @type t :: %__MODULE__{
@@ -34,7 +34,7 @@ defmodule Fluminus.API.File do
         {:ok,
          %__MODULE__{
            id: id,
-           name: sanitise_filename(code),
+           name: Util.sanitise_filename(code),
            directory?: true,
            children: children,
            allow_upload?: false
@@ -89,15 +89,9 @@ defmodule Fluminus.API.File do
   @spec download(__MODULE__.t(), Authorization.t(), Path.t()) :: :ok | {:error, :exists | any()}
   def download(file = %__MODULE__{name: name}, auth = %Authorization{}, path) do
     destination = Path.join(path, name)
+    f = fn -> get_download_url(file, auth) end
 
-    with {:exists?, false} <- {:exists?, File.exists?(destination)},
-         {:ok, url} <- get_download_url(file, auth),
-         :ok <- HTTPClient.download(%HTTPClient{}, url, destination) do
-      :ok
-    else
-      {:exists?, true} -> {:error, :exists}
-      {:error, reason} -> {:error, reason}
-    end
+    Util.download(f, destination)
   end
 
   @spec get_children(String.t(), Authorization.t(), bool()) :: {:ok, [__MODULE__.t()]} | {:error, any()}
@@ -112,20 +106,13 @@ defmodule Fluminus.API.File do
     end
   end
 
-  @spec sanitise_filename(String.t()) :: String.t()
-  defp sanitise_filename(name) when is_binary(name) do
-    # According to http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html:
-    # The bytes composing the name shall not contain the <NUL> or <slash> characters
-    String.replace(name, ~r|[/\0]|, "-")
-  end
-
   @spec parse_child(map(), bool()) :: __MODULE__.t()
   defp parse_child(child = %{"id" => id, "name" => name}, add_creator_name?) when is_boolean(add_creator_name?) do
     directory? = is_map(child["access"])
 
     %__MODULE__{
       id: id,
-      name: sanitise_filename("#{if add_creator_name?, do: "#{child["creatorName"]} - ", else: ""}#{name}"),
+      name: Util.sanitise_filename("#{if add_creator_name?, do: "#{child["creatorName"]} - ", else: ""}#{name}"),
       directory?: directory?,
       children: if(directory?, do: nil, else: []),
       allow_upload?: if(child["allowUpload"], do: true, else: false)

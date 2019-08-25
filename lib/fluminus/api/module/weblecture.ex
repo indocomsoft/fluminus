@@ -3,7 +3,7 @@ defmodule Fluminus.API.Module.Weblecture do
 
   @type t :: %__MODULE__{module_id: String.t(), id: String.t(), name: String.t()}
 
-  alias Fluminus.{API, Authorization, HTTPClient}
+  alias Fluminus.{API, Authorization, HTTPClient, Util}
   alias Fluminus.API.Module
 
   def from_api(%{"id" => id, "name" => name}, %Module{id: module_id}) when is_binary(id) and is_binary(module_id) do
@@ -31,7 +31,7 @@ defmodule Fluminus.API.Module.Weblecture do
     end
   end
 
-  @spec do_get_download_url(String.t(), Map.t()) :: {:ok, String.t()} | {:error, any()}
+  @spec do_get_download_url(String.t(), map()) :: {:ok, String.t()} | {:error, any()}
   defp do_get_download_url(launch_url, data_items) when is_binary(launch_url) and is_map(data_items) do
     body = URI.encode_query(data_items)
 
@@ -43,27 +43,16 @@ defmodule Fluminus.API.Module.Weblecture do
          {:ok, _, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, video_url) do
       {:ok, location}
     else
+      {:floki, _} -> {:error, :floki}
       {:error, error} -> {:error, error}
     end
   end
 
+  @spec download(__MODULE__.t(), Authorization.t(), Path.t()) :: :ok | {:error, :exists | any()}
   def download(weblecture = %__MODULE__{name: name}, auth = %Authorization{}, path) do
-    destination = Path.join(path, "#{sanitise_filename(name)}.mp4")
+    destination = Path.join(path, "#{Util.sanitise_filename(name)}.mp4")
+    f = fn -> get_download_url(weblecture, auth) end
 
-    with {:exists?, false} <- {:exists?, File.exists?(destination)},
-         {:ok, url} <- get_download_url(weblecture, auth),
-         :ok <- HTTPClient.download(%HTTPClient{}, url, destination) do
-      :ok
-    else
-      {:exists?, true} -> {:error, :exists}
-      {:error, reason} -> {:error, reason}
-    end
-  end
-
-  @spec sanitise_filename(String.t()) :: String.t()
-  defp sanitise_filename(name) when is_binary(name) do
-    # According to http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html:
-    # The bytes composing the name shall not contain the <NUL> or <slash> characters
-    String.replace(name, ~r|[/\0]|, "-")
+    Util.download(f, destination)
   end
 end

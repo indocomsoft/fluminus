@@ -4,7 +4,7 @@ defmodule Fluminus.MixProject do
   def project do
     [
       app: :fluminus,
-      version: "1.3.0",
+      version: "1.3.1",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,

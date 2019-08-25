@@ -85,8 +85,15 @@ defmodule Fluminus.API.Module do
          {:ok, %{"data" => data}} when is_list(data) <- API.api(auth, uri_children) do
       {:ok, Enum.map(data, &Weblecture.from_api(&1, module))}
     else
-      {:ok, response} -> {:error, {:unexpected_response, response}}
-      {:error, error} -> {:error, error}
+      {:error,
+       {:unexpected_content, %{status_code: 400, body: "{\"parentID\":[\"No weblecture found for this module.\"]}"}}} ->
+        {:ok, []}
+
+      {:ok, response} ->
+        {:error, {:unexpected_response, response}}
+
+      {:error, error} ->
+        {:error, error}
     end
   end
 

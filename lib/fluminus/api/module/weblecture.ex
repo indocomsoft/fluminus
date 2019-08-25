@@ -53,6 +53,7 @@ defmodule Fluminus.API.Module.Weblecture do
          {:ok, _, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, video_url) do
       {:ok, location}
     else
+      {:ok, _, _, response} -> {:error, {:unexpected_response, response}}
       {:floki, _} -> {:error, :floki}
       {:error, error} -> {:error, error}
     end

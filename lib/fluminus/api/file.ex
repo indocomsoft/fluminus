@@ -86,12 +86,12 @@ defmodule Fluminus.API.File do
 
   This function will return `{:error, :exists}` if the file already exists in the given `path`
   """
-  @spec download(__MODULE__.t(), Authorization.t(), Path.t()) :: :ok | {:error, :exists | any()}
-  def download(file = %__MODULE__{name: name}, auth = %Authorization{}, path) do
+  @spec download(__MODULE__.t(), Authorization.t(), Path.t(), bool()) :: :ok | {:error, :exists | any()}
+  def download(file = %__MODULE__{name: name}, auth = %Authorization{}, path, verbose \\ false) do
     destination = Path.join(path, name)
     f = fn -> get_download_url(file, auth) end
 
-    Util.download(f, destination)
+    Util.download(f, destination, verbose)
   end
 
   @spec get_children(String.t(), Authorization.t(), bool()) :: {:ok, [__MODULE__.t()]} | {:error, any()}

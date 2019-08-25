@@ -48,11 +48,11 @@ defmodule Fluminus.API.Module.Weblecture do
     end
   end
 
-  @spec download(__MODULE__.t(), Authorization.t(), Path.t()) :: :ok | {:error, :exists | any()}
-  def download(weblecture = %__MODULE__{name: name}, auth = %Authorization{}, path) do
+  @spec download(__MODULE__.t(), Authorization.t(), Path.t(), bool()) :: :ok | {:error, :exists | any()}
+  def download(weblecture = %__MODULE__{name: name}, auth = %Authorization{}, path, verbose) do
     destination = Path.join(path, "#{Util.sanitise_filename(name)}.mp4")
     f = fn -> get_download_url(weblecture, auth) end
 
-    Util.download(f, destination)
+    Util.download(f, destination, verbose)
   end
 end

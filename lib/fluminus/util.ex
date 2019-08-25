@@ -20,11 +20,11 @@ defmodule Fluminus.Util do
 
   This function will return `{:error, :exists}` if the file already exists.
   """
-  @spec download((() -> {:ok, String.t()} | {:error, any()}), Path.t()) :: :ok | {:error, :exists | any()}
-  def download(f, destination) when is_function(f) do
+  @spec download((() -> {:ok, String.t()} | {:error, any()}), Path.t(), bool()) :: :ok | {:error, :exists | any()}
+  def download(f, destination, verbose) when is_function(f) do
     with {:exists?, false} <- {:exists?, File.exists?(destination)},
          {:ok, url} <- f.(),
-         :ok <- HTTPClient.download(%HTTPClient{}, url, destination) do
+         :ok <- HTTPClient.download(%HTTPClient{}, url, destination, false, [], verbose) do
       :ok
     else
       {:exists?, true} -> {:error, :exists}

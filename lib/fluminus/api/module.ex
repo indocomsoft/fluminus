@@ -13,6 +13,7 @@ defmodule Fluminus.API.Module do
   """
 
   alias Fluminus.{API, Authorization}
+  alias Fluminus.API.Module.Weblecture
 
   @teacher_access ~w(access_Full access_Create access_Update access_Delete access_Settings_Read access_Settings_Update)
 
@@ -73,6 +74,19 @@ defmodule Fluminus.API.Module do
 
       {:error, error} ->
         {:error, error}
+    end
+  end
+
+  @spec weblectures(__MODULE__.t(), Authorization.t()) :: {:ok, [String.t()]} | {:error, any()}
+  def weblectures(module = %__MODULE__{id: id}, auth = %Authorization{}) do
+    with uri_parent <- "/weblecture/?ParentID=#{id}",
+         {:ok, %{"id" => panopto_id}} when is_binary(panopto_id) <- API.api(auth, uri_parent),
+         uri_children <- "/weblecture/#{panopto_id}/sessions/?sortby=createdDate",
+         {:ok, %{"data" => data}} when is_list(data) <- API.api(auth, uri_children) do
+      {:ok, Enum.map(data, &Weblecture.from_api(&1, module))}
+    else
+      {:ok, response} -> {:error, {:unexpected_response, response}}
+      {:error, error} -> {:error, error}
     end
   end
 end

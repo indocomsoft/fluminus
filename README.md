@@ -22,6 +22,16 @@ PR's are welcome.
 
 Note that this is created through reverse-engineering LumiNUS's Angular Frontend. The API might change at any time (although I doubt it since LumiNUS is using OpenID Connect)
 
+## Features
+- Authentication via ADFS (vafs.nus.edu.sg)
+- Get name of student
+- Get list of modules
+  - Taking/Teaching
+  - Only this semester's modules
+- Get announcements
+- Get listing of workbin files and download them
+- Get listing of webcasts and download them
+
 ## Installation
 ### As a dependency
 

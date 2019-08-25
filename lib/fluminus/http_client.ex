@@ -12,8 +12,8 @@ defmodule Fluminus.HTTPClient do
 
   # Print a dot every time we receive @verbose_download_size bytes
   use Bitwise
-  # 8 MiB
-  @verbose_download_size 8 * (1 <<< 20)
+  # 1 MiB
+  @verbose_download_size 1 <<< 20
 
   @typedoc """
   All the header keys converted to lowercase, and in case there are some headers with
@@ -108,7 +108,6 @@ defmodule Fluminus.HTTPClient do
       %HTTPoison.AsyncChunk{chunk: chunk, id: ^id} ->
         IO.binwrite(file, chunk)
         HTTPoison.stream_next(response)
-        download_loop(response, file, verbose, counter)
 
         if counter >= @verbose_download_size do
           if verbose, do: IO.write(".")

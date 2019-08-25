@@ -13,7 +13,7 @@ defmodule Fluminus.API.Module do
   """
 
   alias Fluminus.{API, Authorization}
-  alias Fluminus.API.Module.Weblecture
+  alias Fluminus.API.Module.{Lesson, Weblecture}
 
   @teacher_access ~w(access_Full access_Create access_Update access_Delete access_Settings_Read access_Settings_Update)
 
@@ -87,6 +87,22 @@ defmodule Fluminus.API.Module do
     else
       {:ok, response} -> {:error, {:unexpected_response, response}}
       {:error, error} -> {:error, error}
+    end
+  end
+
+  @spec lessons(__MODULE__.t(), Authorization.t()) :: {:ok, [Lesson.t()]} | {:error, any()}
+  def lessons(module = %__MODULE__{id: id}, auth = %Authorization{}) do
+    uri = "/lessonplan/Lesson/?ModuleID=#{id}"
+
+    case API.api(auth, uri) do
+      {:ok, %{"data" => data}} when is_list(data) ->
+        {:ok, Enum.map(data, &Lesson.from_api(&1, module))}
+
+      {:ok, response} ->
+        {:error, {:unexpected_response, response}}
+
+      {:error, error} ->
+        {:error, error}
     end
   end
 end

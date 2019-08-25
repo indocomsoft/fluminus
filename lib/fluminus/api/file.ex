@@ -45,6 +45,14 @@ defmodule Fluminus.API.File do
     end
   end
 
+  @spec from_lesson(any()) :: __MODULE__.t() | nil
+  def from_lesson(%{"target" => %{"id" => id, "name" => name, "isResourceType" => false}})
+      when is_binary(id) and is_binary(name) do
+    %__MODULE__{id: id, name: name, directory?: false, children: [], allow_upload?: false}
+  end
+
+  def from_lesson(_), do: nil
+
   @doc """
   Loads the children of a given `#{__MODULE__}` struct.
   """

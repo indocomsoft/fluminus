@@ -27,3 +27,7 @@ fluminus-*.tar
 
 # Ignore configuration
 config.json
+
+# Dialyzer plts
+priv/plts/*.plt
+priv/plts/*.plt.hash

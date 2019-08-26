@@ -23,7 +23,10 @@ defmodule Fluminus.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
-      dialyzer: [plt_add_apps: [:cookie, :floki, :jason, :html_entities, :html_sanitize_ex]]
+      dialyzer: [
+        plt_add_apps: [:cookie, :floki, :jason, :html_entities, :html_sanitize_ex],
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
+      ]
     ]
   end
 
@@ -51,11 +54,11 @@ defmodule Fluminus.MixProject do
       {:html_sanitize_ex, "~> 1.3.0"},
       {:httpoison, "~> 1.4"},
       {:jason, "~> 1.1"},
-      {:dialyxir, "~> 1.0.0-rc.4", only: :dev, runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:plug_cowboy, "~> 2.0", only: :test},
-      {:credo, "~> 1.1.2", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.1.2", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.4", only: [:dev, :test], runtime: false}
     ]
   end
 

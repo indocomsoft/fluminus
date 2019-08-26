@@ -13,6 +13,7 @@ cache:
   directories:
     - _build
     - deps
+    - priv/plts
 
 env: MIX_ENV=test
 
@@ -20,3 +21,4 @@ script:
   - mix coveralls.travis
   - mix credo
   - mix format --check-formatted
+  - mix dialyzer --halt-exit-status

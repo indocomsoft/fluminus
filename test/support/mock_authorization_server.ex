@@ -3,6 +3,7 @@ defmodule Fluminus.MockAuthorizationServer do
 
   use Plug.Router
 
+  alias Fluminus.TestUtil
   alias Plug.Conn
 
   require Logger
@@ -32,7 +33,7 @@ defmodule Fluminus.MockAuthorizationServer do
       end)
       |> Conn.resp(response["status_code"], response["body"])
     else
-      error(conn)
+      TestUtil.log_error(conn)
       conn
     end
   end
@@ -47,12 +48,5 @@ defmodule Fluminus.MockAuthorizationServer do
         (request["body"] || %{}) == conn.body_params and
         Enum.all?(request["query"] || %{}, fn {key, value} -> Map.get(conn.query_params, key) == value end)
     end)
-  end
-
-  defp error(conn) do
-    Logger.error("Please create cassette for this request: #{conn.method} #{conn.request_path}")
-    Logger.error("cookies: #{Jason.encode!(conn.cookies)}")
-    Logger.error("body: #{Jason.encode!(conn.body_params)}")
-    Logger.error("query: #{Jason.encode!(conn.query_params || %{})}")
   end
 end

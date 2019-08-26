@@ -36,7 +36,8 @@ defmodule Fluminus.Util do
           :ok | {:error, :exists | any()}
   def download_multimedia(f, destination, verbose) when is_function(f) do
     download_fn = fn url ->
-      {executable, cmd_args} =
+      # FFMpex has a wrong spec: https://github.com/talklittle/ffmpex/pull/22
+      {_, cmd_args} =
         FFmpex.new_command()
         |> add_input_file(url)
         |> add_output_file(destination)
@@ -45,13 +46,12 @@ defmodule Fluminus.Util do
 
       output = if verbose, do: IO.stream(:stdio, :line), else: ""
 
-      if executable do
-        case System.cmd(executable, cmd_args, into: output, stderr_to_stdout: true) do
-          {_, 0} -> :ok
-          error -> {:error, error}
-        end
+      with executable when not is_nil(executable) <- System.find_executable("ffmpeg"),
+           {_, 0} <- System.cmd(executable, cmd_args, into: output, stderr_to_stdout: true) do
+        :ok
       else
-        {:error, :no_ffmpeg}
+        nil -> {:error, :noffmpeg}
+        other -> {:error, other}
       end
     end
 

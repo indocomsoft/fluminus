@@ -26,7 +26,7 @@ defmodule Fluminus.Util do
   @spec download((() -> {:ok, String.t()} | {:error, any()}), Path.t(), bool()) :: :ok | {:error, :exists | any()}
   def download(f, destination, verbose) when is_function(f) do
     download_fn = fn url ->
-      HTTPClient.download(%HTTPClient{}, url, destination)
+      HTTPClient.download(%HTTPClient{}, url, destination, false, [], verbose)
     end
 
     download_wrapper(f, download_fn, destination)

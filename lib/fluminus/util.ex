@@ -5,6 +5,9 @@ defmodule Fluminus.Util do
 
   alias Fluminus.HTTPClient
 
+  import FFmpex
+  use FFmpex.Options
+
   @doc """
   Sanitises filename according to Unix standard.
   """
@@ -22,9 +25,49 @@ defmodule Fluminus.Util do
   """
   @spec download((() -> {:ok, String.t()} | {:error, any()}), Path.t(), bool()) :: :ok | {:error, :exists | any()}
   def download(f, destination, verbose) when is_function(f) do
+    download_fn = fn url ->
+      HTTPClient.download(%HTTPClient{}, url, destination)
+    end
+
+    download_wrapper(f, download_fn, destination)
+  end
+
+  @spec download_multimedia((() -> {:ok, String.t()} | {:error, any()}), Path.t(), bool()) ::
+          :ok | {:error, :exists | any()}
+  def download_multimedia(f, destination, verbose) when is_function(f) do
+    download_fn = fn url ->
+      {executable, cmd_args} =
+        FFmpex.new_command()
+        |> add_input_file(url)
+        |> add_output_file(destination)
+        |> add_file_option(option_c("copy"))
+        |> prepare()
+
+      output = if verbose, do: IO.stream(:stdio, :line), else: ""
+
+      if executable do
+        case System.cmd(executable, cmd_args, into: output, stderr_to_stdout: true) do
+          {_, 0} -> :ok
+          error -> {:error, error}
+        end
+      else
+        {:error, :no_ffmpeg}
+      end
+    end
+
+    download_wrapper(f, download_fn, destination)
+  end
+
+  @spec download_wrapper(
+          (() -> {:ok, String.t()} | {:error, any()}),
+          (url :: String.t() -> :ok | {:error, any()}),
+          Path.t()
+        ) ::
+          :ok | {:error, :exists | any()}
+  defp download_wrapper(url_gen, download_fn, destination) when is_function(url_gen) and is_function(download_fn) do
     with {:exists?, false} <- {:exists?, File.exists?(destination)},
-         {:ok, url} <- f.(),
-         :ok <- HTTPClient.download(%HTTPClient{}, url, destination, false, [], verbose) do
+         {:ok, url} <- url_gen.(),
+         :ok <- download_fn.(url) do
       :ok
     else
       {:exists?, true} -> {:error, :exists}

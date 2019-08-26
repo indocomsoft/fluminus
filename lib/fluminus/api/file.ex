@@ -10,6 +10,7 @@ defmodule Fluminus.API.File do
   * `:children` - `nil` indicated the need to fetch, otherwise it contains a list of its children.
   if `directory?` is `false`, then this field contains an empty list.
   * `:allow_upload?` - whether this is a student submission folder.
+  * `:multimedia?` - whether this is a multimedia file.
   """
 
   alias Fluminus.{API, Authorization, Util}
@@ -20,9 +21,10 @@ defmodule Fluminus.API.File do
           name: String.t(),
           directory?: bool(),
           children: [__MODULE__.t()] | nil,
-          allow_upload?: bool()
+          allow_upload?: bool(),
+          multimedia?: bool()
         }
-  defstruct ~w(id name directory? children allow_upload?)a
+  defstruct ~w(id name directory? children allow_upload? multimedia?)a
 
   @doc """
   Creates `#{__MODULE__}` struct from a `Module`.
@@ -37,7 +39,8 @@ defmodule Fluminus.API.File do
            name: Util.sanitise_filename(code),
            directory?: true,
            children: children,
-           allow_upload?: false
+           allow_upload?: false,
+           multimedia?: false
          }}
 
       {:error, _} ->
@@ -49,15 +52,23 @@ defmodule Fluminus.API.File do
   Creates a `#{__MODULE__}` struct from the API response retrieved by `Lesson`.
   """
   @spec from_lesson(api_response :: any()) :: __MODULE__.t() | nil
-  # Multimedia file is not downloadable
-  def from_lesson(%{"target" => %{"duration" => _}}), do: nil
+  def from_lesson(api_response = %{"target" => %{"duration" => _}}), do: from_lesson(api_response, true)
 
-  def from_lesson(%{"target" => %{"id" => id, "name" => name, "isResourceType" => false}})
-      when is_binary(id) and is_binary(name) do
-    %__MODULE__{id: id, name: name, directory?: false, children: [], allow_upload?: false}
-  end
+  def from_lesson(api_response = %{"target" => %{"isResourceType" => false}}), do: from_lesson(api_response, false)
 
   def from_lesson(_), do: nil
+
+  defp from_lesson(%{"target" => %{"id" => id, "name" => name, "isResourceType" => false}}, multimedia?)
+       when is_binary(id) and is_binary(name) and is_boolean(multimedia?) do
+    %__MODULE__{
+      id: id,
+      name: "#{Util.sanitise_filename(name)}.mp4",
+      directory?: false,
+      children: [],
+      allow_upload?: false,
+      multimedia?: multimedia?
+    }
+  end
 
   @doc """
   Loads the children of a given `#{__MODULE__}` struct.
@@ -87,7 +98,18 @@ defmodule Fluminus.API.File do
   Note that the download url of a directory is a url to that directory zipped.
   """
   @spec get_download_url(__MODULE__.t(), Authorization.t()) :: {:ok, String.t()} | {:error, any()}
-  def get_download_url(_file = %__MODULE__{id: id}, auth = %Authorization{}) do
+
+  def get_download_url(_file = %__MODULE__{id: id, multimedia?: true}, auth = %Authorization{}) do
+    uri = "/multimedia/media/#{id}"
+
+    case API.api(auth, uri) do
+      {:ok, %{"streamUrlPath" => m3u8}} -> {:ok, m3u8}
+      {:ok, response} -> {:error, {:unexpected_response, response}}
+      {:error, error} -> {:error, error}
+    end
+  end
+
+  def get_download_url(_file = %__MODULE__{id: id, multimedia?: false}, auth = %Authorization{}) do
     case API.api(auth, "files/file/#{id}/downloadurl") do
       {:ok, %{"data" => data}} when is_binary(data) -> {:ok, data}
       {:ok, response} -> {:error, {:unexpected_response, response}}
@@ -101,11 +123,19 @@ defmodule Fluminus.API.File do
   This function will return `{:error, :exists}` if the file already exists in the given `path`
   """
   @spec download(__MODULE__.t(), Authorization.t(), Path.t(), bool()) :: :ok | {:error, :exists | any()}
-  def download(file = %__MODULE__{name: name}, auth = %Authorization{}, path, verbose \\ false) do
+  def download(
+        file = %__MODULE__{name: name, multimedia?: multimedia?},
+        auth = %Authorization{},
+        path,
+        verbose \\ false
+      ) do
     destination = Path.join(path, name)
     f = fn -> get_download_url(file, auth) end
 
-    Util.download(f, destination, verbose)
+    case multimedia? do
+      false -> Util.download(f, destination, verbose)
+      true -> Util.download_multimedia(f, destination, verbose)
+    end
   end
 
   @spec get_children(String.t(), Authorization.t(), bool()) :: {:ok, [__MODULE__.t()]} | {:error, any()}
@@ -129,7 +159,8 @@ defmodule Fluminus.API.File do
       name: Util.sanitise_filename("#{if add_creator_name?, do: "#{child["creatorName"]} - ", else: ""}#{name}"),
       directory?: directory?,
       children: if(directory?, do: nil, else: []),
-      allow_upload?: if(child["allowUpload"], do: true, else: false)
+      allow_upload?: if(child["allowUpload"], do: true, else: false),
+      multimedia?: false
     }
   end
 end

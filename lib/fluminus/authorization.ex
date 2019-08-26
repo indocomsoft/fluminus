@@ -82,7 +82,7 @@ defmodule Fluminus.Authorization do
   end
 
   @doc """
-  Obtains a `#{__MODULE__}` struct containing JWT required for authorization and cookies to refresh JWT.
+  Obtains a `#{__MODULE__}` struct containing JWT required for authorization and cookies to refresh JWT. It will be valid for 8 hours and is non-renewable (just like fossil fuels).
 
   `username` is the username of your NUSNET account (in the format of e0123456).
   `password` is the password of your NUSNET account.
@@ -139,7 +139,7 @@ defmodule Fluminus.Authorization do
 
   @doc """
   Renews the JWT of a `#{__MODULE__}` struct containing expired token using the cookies inside the struct.
-  Please note that the cookie is only valid for 24 hours.
+  Please note that the cookie is only valid for 8 hours.
 
   ## Examples
 
@@ -147,6 +147,7 @@ defmodule Fluminus.Authorization do
       {:ok, }
   """
   @spec renew_jwt(__MODULE__.t()) :: {:ok, __MODULE__.t()} | {:error, :invalid_authorization} | {:error, any()}
+  @deprecated "vafs_jwt/2 returns an Authorization that is non-renewable"
   def renew_jwt(auth = %__MODULE__{}) do
     with {:ok, %{client: client}, auth_uri} <- auth_endpoint_uri(auth),
          {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, auth_uri),

@@ -77,6 +77,9 @@ defmodule Fluminus.API.Module do
     end
   end
 
+  @doc """
+  Get all the weblectures associated with this Module.
+  """
   @spec weblectures(__MODULE__.t(), Authorization.t()) :: {:ok, [String.t()]} | {:error, any()}
   def weblectures(module = %__MODULE__{id: id}, auth = %Authorization{}) do
     with uri_parent <- "/weblecture/?ParentID=#{id}",
@@ -97,6 +100,9 @@ defmodule Fluminus.API.Module do
     end
   end
 
+  @doc """
+  Get all the lesson plans associated with this Module.
+  """
   @spec lessons(__MODULE__.t(), Authorization.t()) :: {:ok, [Lesson.t()]} | {:error, any()}
   def lessons(module = %__MODULE__{id: id}, auth = %Authorization{}) do
     uri = "/lessonplan/Lesson/?ModuleID=#{id}"

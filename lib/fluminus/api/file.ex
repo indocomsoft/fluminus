@@ -45,7 +45,13 @@ defmodule Fluminus.API.File do
     end
   end
 
-  @spec from_lesson(any()) :: __MODULE__.t() | nil
+  @doc """
+  Creates a `#{__MODULE__}` struct from the API response retrieved by `Lesson`.
+  """
+  @spec from_lesson(api_response :: any()) :: __MODULE__.t() | nil
+  # Multimedia file is not downloadable
+  def from_lesson(%{"duration" => _}), do: nil
+
   def from_lesson(%{"target" => %{"id" => id, "name" => name, "isResourceType" => false}})
       when is_binary(id) and is_binary(name) do
     %__MODULE__{id: id, name: name, directory?: false, children: [], allow_upload?: false}

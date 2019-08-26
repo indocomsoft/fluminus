@@ -17,12 +17,18 @@ defmodule Fluminus.API.Module.Lesson do
 
   @type t :: %__MODULE__{id: String.t(), name: String.t(), week: String.t(), module_id: String.t()}
 
-  @spec from_api(map(), Module.t()) :: __MODULE__.t()
+  @doc """
+  Creates `#{__MODULE__}` struct from LumiNUS API response.
+  """
+  @spec from_api(api_response :: map(), Module.t()) :: __MODULE__.t()
   def from_api(%{"id" => id, "name" => name, "navigationLabel" => week}, %Module{id: module_id})
       when is_binary(id) and is_binary(name) and is_binary(week) and is_binary(module_id) do
     %__MODULE__{id: id, name: name, week: week, module_id: module_id}
   end
 
+  @doc """
+  Get files that are contained inside this lesson plan.
+  """
   @spec files(__MODULE__.t(), Authorization.t()) :: {:ok, [File.t()]} | {:error, any()}
   def files(%__MODULE__{id: id, module_id: module_id}, auth = %Authorization{}) do
     uri = "/lessonplan/Activity/?populate=TargetAncestor&ModuleID=#{module_id}&LessonID=#{id}"

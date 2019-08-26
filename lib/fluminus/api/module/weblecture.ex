@@ -16,10 +16,17 @@ defmodule Fluminus.API.Module.Weblecture do
   alias Fluminus.{API, Authorization, HTTPClient, Util}
   alias Fluminus.API.Module
 
+  @doc """
+  Creates `#{__MODULE__}` struct from LumiNUS API response.
+  """
+  @spec from_api(api_response :: any(), Module.t()) :: __MODULE__.t()
   def from_api(%{"id" => id, "name" => name}, %Module{id: module_id}) when is_binary(id) and is_binary(module_id) do
     %__MODULE__{id: id, module_id: module_id, name: name}
   end
 
+  @doc """
+  Obtains the download url for a given weblecture.
+  """
   @spec get_download_url(__MODULE__.t(), Authorization.t()) :: {:ok, String.t()} | {:error, any()}
   def get_download_url(%__MODULE__{module_id: module_id, id: id}, auth = %Authorization{})
       when is_binary(module_id) and is_binary(id) do
@@ -59,6 +66,11 @@ defmodule Fluminus.API.Module.Weblecture do
     end
   end
 
+  @doc """
+  Downloads the given weblecture to the location specified by `path`.
+
+  This function will return `{:error, :exists}` if the file already exists in the given `path`
+  """
   @spec download(__MODULE__.t(), Authorization.t(), Path.t(), bool()) :: :ok | {:error, :exists | any()}
   def download(weblecture = %__MODULE__{name: name}, auth = %Authorization{}, path, verbose) do
     destination = Path.join(path, "#{Util.sanitise_filename(name)}.mp4")

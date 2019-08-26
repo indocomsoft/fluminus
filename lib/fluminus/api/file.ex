@@ -62,7 +62,7 @@ defmodule Fluminus.API.File do
        when is_binary(id) and is_binary(name) and is_boolean(multimedia?) do
     %__MODULE__{
       id: id,
-      name: "#{Util.sanitise_filename(name)}.mp4",
+      name: Util.sanitise_filename(name) <> if(multimedia?, do: ".mp4", else: ""),
       directory?: false,
       children: [],
       allow_upload?: false,

@@ -18,7 +18,8 @@ defmodule Fluminus.API.FileTest do
     children: [],
     directory?: false,
     id: "731db9ba-b919-4614-928c-1ac7d4172b3c",
-    name: "Jasra, Ajay - Tut1.docx"
+    name: "Jasra, Ajay - Tut1.docx",
+    multimedia?: false
   }
 
   setup_all do
@@ -42,19 +43,22 @@ defmodule Fluminus.API.FileTest do
                    children: nil,
                    directory?: true,
                    id: "7c464b62-3811-4c87-b1d1-7407e6ec321b",
-                   name: "Tutorial Questions"
+                   name: "Tutorial Questions",
+                   multimedia?: false
                  },
                  %File{
                    allow_upload?: false,
                    children: nil,
                    directory?: true,
                    id: "5a9525ba-e90c-44aa-a659-267bbf508d11",
-                   name: "Lecture Notes"
+                   name: "Lecture Notes",
+                   multimedia?: false
                  }
                ],
                directory?: true,
                id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
-               name: "ST2334"
+               name: "ST2334",
+               multimedia?: false
              }
   end
 
@@ -72,7 +76,8 @@ defmodule Fluminus.API.FileTest do
                  children: nil,
                  directory?: true,
                  id: "7c464b62-3811-4c87-b1d1-7407e6ec321b",
-                 name: "Tutorial Questions"
+                 name: "Tutorial Questions",
+                 multimedia?: false
                },
                @authorization
              )
@@ -83,112 +88,128 @@ defmodule Fluminus.API.FileTest do
                children: [],
                directory?: false,
                id: "399c60ce-26a9-4567-9864-83a7964c60d3",
-               name: "Jasra, Ajay - ST2334 Solution to Tut 5.docx"
+               name: "Jasra, Ajay - ST2334 Solution to Tut 5.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "6d2c2c56-0ee5-4f63-a56d-2c5b64565ff5",
-               name: "Jasra, Ajay - ST2334 Solution to Tut 4.docx"
+               name: "Jasra, Ajay - ST2334 Solution to Tut 4.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "64904b93-cc80-4397-b085-122852b711b1",
-               name: "Jasra, Ajay - ST2334 Solution to Tut 3.docx"
+               name: "Jasra, Ajay - ST2334 Solution to Tut 3.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "e9109d02-4054-4c5c-ae94-264e424fd525",
-               name: "Jasra, Ajay - ST2334 Solution to Tut 2.docx"
+               name: "Jasra, Ajay - ST2334 Solution to Tut 2.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "e5014221-6e1d-4907-a0e0-1ce6a30a67da",
-               name: "Jasra, Ajay - ST2334 Solution to Tut 1.docx"
+               name: "Jasra, Ajay - ST2334 Solution to Tut 1.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "566fcc1a-d5e2-4e9d-b53d-b12f25ec37ee",
-               name: "Jasra, Ajay - Tut11.docx"
+               name: "Jasra, Ajay - Tut11.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "361d6f87-f2ca-499f-9c61-1c200baed725",
-               name: "Jasra, Ajay - Tut10.docx"
+               name: "Jasra, Ajay - Tut10.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "bb9a448d-4757-4767-bd8d-2fc1220224bf",
-               name: "Jasra, Ajay - Tut9.docx"
+               name: "Jasra, Ajay - Tut9.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "ad3f5277-f9d0-4c9f-8283-04d4b2ce986a",
-               name: "Jasra, Ajay - Tut8.docx"
+               name: "Jasra, Ajay - Tut8.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "2dd73690-b6ee-47cd-99d5-b486fb3cb513",
-               name: "Jasra, Ajay - Tut6.docx"
+               name: "Jasra, Ajay - Tut6.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "b8889d6d-3a38-4404-ac0f-aa53799a5237",
-               name: "Jasra, Ajay - Tut7.docx"
+               name: "Jasra, Ajay - Tut7.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "dbc6c7fd-0261-4603-b233-beca395067fa",
-               name: "Jasra, Ajay - Tut4.docx"
+               name: "Jasra, Ajay - Tut4.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "8ae29e68-822b-471b-866b-9b1098fcede2",
-               name: "Jasra, Ajay - Tut5.docx"
+               name: "Jasra, Ajay - Tut5.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "d3009c67-f037-484e-bcab-3028f9a321da",
-               name: "Jasra, Ajay - Tut2.docx"
+               name: "Jasra, Ajay - Tut2.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "08905bc1-de56-4c5e-9620-7dacf0cca377",
-               name: "Jasra, Ajay - Tut3.docx"
+               name: "Jasra, Ajay - Tut3.docx",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: [],
                directory?: false,
                id: "731db9ba-b919-4614-928c-1ac7d4172b3c",
-               name: "Jasra, Ajay - Tut1.docx"
+               name: "Jasra, Ajay - Tut1.docx",
+               multimedia?: false
              }
            ]
   end
@@ -201,7 +222,8 @@ defmodule Fluminus.API.FileTest do
                  children: nil,
                  directory?: true,
                  id: "40582141-1a1d-41b6-ba3a-efa44ff7fd05",
-                 name: "ST2334"
+                 name: "ST2334",
+                 multimedia?: false
                },
                @authorization
              )
@@ -212,14 +234,16 @@ defmodule Fluminus.API.FileTest do
                children: nil,
                directory?: true,
                id: "7c464b62-3811-4c87-b1d1-7407e6ec321b",
-               name: "Tutorial Questions"
+               name: "Tutorial Questions",
+               multimedia?: false
              },
              %File{
                allow_upload?: false,
                children: nil,
                directory?: true,
                id: "5a9525ba-e90c-44aa-a659-267bbf508d11",
-               name: "Lecture Notes"
+               name: "Lecture Notes",
+               multimedia?: false
              }
            ]
   end

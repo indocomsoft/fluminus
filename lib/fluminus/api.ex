@@ -195,6 +195,6 @@ defmodule Fluminus.API do
 
   @spec full_api_uri(String.t()) :: String.t()
   defp full_api_uri(path) do
-    @api_base_url |> URI.merge(path) |> URI.to_string()
+    Path.join(@api_base_url, path)
   end
 end

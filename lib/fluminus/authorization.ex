@@ -124,7 +124,7 @@ defmodule Fluminus.Authorization do
              "code" => code
            }),
          {:ok, %HTTPClient{cookies: cookies}, _, %{status_code: 200, body: adfs_token_result}} <-
-           HTTPClient.post(client, "#{@api_base_uri}/login/adfstoken", adfs_body, [
+           HTTPClient.post(client, Path.join(@api_base_uri, "/login/adfstoken"), adfs_body, [
              {"Ocp-Apim-Subscription-Key", @ocm_apim_subscription_key},
              {"Content-Type", "application/x-www-form-urlencoded"}
            ]),

@@ -50,7 +50,7 @@ defmodule Fluminus.API.File do
   """
   @spec from_lesson(api_response :: any()) :: __MODULE__.t() | nil
   # Multimedia file is not downloadable
-  def from_lesson(%{"duration" => _}), do: nil
+  def from_lesson(%{"target" => %{"duration" => _}}), do: nil
 
   def from_lesson(%{"target" => %{"id" => id, "name" => name, "isResourceType" => false}})
       when is_binary(id) and is_binary(name) do

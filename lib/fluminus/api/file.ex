@@ -43,7 +43,8 @@ defmodule Fluminus.API.File do
            multimedia?: false
          }}
 
-      {:error, _} ->
+      a = {:error, _} ->
+        IO.inspect(a)
         :error
     end
   end
@@ -52,9 +53,10 @@ defmodule Fluminus.API.File do
   Creates a `#{__MODULE__}` struct from the API response retrieved by `Lesson`.
   """
   @spec from_lesson(api_response :: any()) :: __MODULE__.t() | nil
-  def from_lesson(api_response = %{"target" => %{"duration" => _}}), do: from_lesson(api_response, true)
+  def from_lesson(api_response = %{"target" => %{"duration" => _, "typeName" => "File"}}),
+    do: from_lesson(api_response, true)
 
-  def from_lesson(api_response = %{"target" => %{"isResourceType" => false}}), do: from_lesson(api_response, false)
+  def from_lesson(api_response = %{"target" => %{"typeName" => "File"}}), do: from_lesson(api_response, false)
 
   def from_lesson(_), do: nil
 

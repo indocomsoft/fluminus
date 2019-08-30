@@ -43,8 +43,7 @@ defmodule Fluminus.API.File do
            multimedia?: false
          }}
 
-      a = {:error, _} ->
-        IO.inspect(a)
+      {:error, _} ->
         :error
     end
   end

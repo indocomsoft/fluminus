@@ -110,7 +110,7 @@ defmodule Fluminus.Authorization do
 
     body = URI.encode_query(%{"UserName" => username, "Password" => password, "AuthMethod" => "FormsAuthentication"})
 
-    uri = URI.parse(@vafs_uri) |> Map.put(:query, query) |> URI.to_string()
+    uri = @vafs_uri |> URI.parse() |> Map.put(:query, query) |> URI.to_string()
 
     with {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.post(%HTTPClient{}, uri, body),
          {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, location),

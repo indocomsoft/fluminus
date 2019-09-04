@@ -9,6 +9,7 @@ defmodule Fluminus.Authorization do
   """
 
   @auth_base_uri Fluminus.Constants.auth_base_uri(Mix.env())
+  @vafs_uri Fluminus.Constants.vafs_uri(Mix.env())
   @api_base_uri Fluminus.Constants.api_base_url(Mix.env())
   @discovery_path "/v2/auth/.well-known/openid-configuration"
   @client_id "verso"
@@ -109,7 +110,7 @@ defmodule Fluminus.Authorization do
 
     body = URI.encode_query(%{"UserName" => username, "Password" => password, "AuthMethod" => "FormsAuthentication"})
 
-    uri = URI.parse("https://vafs.nus.edu.sg/adfs/oauth2/authorize") |> Map.put(:query, query) |> URI.to_string()
+    uri = URI.parse(@vafs_uri) |> Map.put(:query, query) |> URI.to_string()
 
     with {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.post(%HTTPClient{}, uri, body),
          {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, location),

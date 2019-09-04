@@ -10,7 +10,7 @@ defmodule Fluminus.TestUtil do
   defp process_conn_member(value), do: value
 
   defp encode_conn_member(conn = %Conn{}, key) when is_atom(key) do
-    conn[key] |> process_conn_member() |> Jason.encode!()
+    conn |> Map.from_struct() |> Map.get(key) |> process_conn_member() |> Jason.encode!()
   end
 
   def log_error(conn = %Conn{}) do

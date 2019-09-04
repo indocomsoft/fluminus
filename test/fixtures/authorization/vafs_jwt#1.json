@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "POST",
+    "body": {
+      "AuthMethod":"FormsAuthentication","Password":"hunter2","UserName":"e0123456"
+    },
+    "request_path": "/",
+    "cookies": {},
+    "query": {"client_id":"E10493A3B1024F14BDC7D0D8B9F649E9-234390","redirect_uri":"https://luminus.nus.edu.sg/auth/callback","resource":"sg_edu_nus_oauth","response_type":"code"}
+  },
+  "response": {
+    "body": "",
+    "headers": [["Set-Cookie", "MSISAuth=AAEAACL959NNpcNTCZm5hvSHHdF2HjSWEI/jm5Jui3hOQNF1XaxAAsjo2V0SnJUWnotkuz93qud90Rl9TtaW0xZqOwkbhG6vduEazbk2l1CvA3NFPWsoY54fmN9PbEFnBLv3rx6q5XRpdLFWOOI+tf5jIwQh1bKWf/ToW6XYxv3pAnKWQNdBTs3mu33hhWrZR1LXiFMBFXv13+AVizd4tBYfhJhnHcoJ3b8RIORU36pCU/i4jNEM563L0n87pQggtOZ2TP+0Gc3PJ/pF9Cv4xamrUeQX6kcyY4CC7zelHODHYXPuCtQLzICYjlC6CotAk8g4onxKwvVbs7rIy0yksM47Y/22uAj8hmNz/6ohSkiyOCnp3SyO/1ioHsV7+Cku0bapsQABAADYrxrnbIZl0kwWWq2kiYt6K3P42S3hEqMTYxjnxtXGirsAv4koKXQdUJMz1klPpS+sF+WPg+kboEmJJzJyjuZmRNasNA7S2pOxygI0hA/HmRcs8Bh1mYc4s0VmcNUcRzVuy0XiFlz3Ds2WFMTRpOs1+Kddw3UpjVHF/z42YAHeNt6T5U6q31Pm40qE6gyqH3do3USFysZFABT/lUMWfpe56TcnLN0OfMFdnJHL8dVDONCIfocGxDgBPCyGrl2EJyOC29YHa99zP41MjJ7HY6tZOEK73uYRLPgEXPuvBy5fO+sUtmGjfJ9ks5fmDXUNjtBEYj2N57ST0bOyGI3QFSvvgAMAAP2clOXZfN2E2yqeZbBEGEwXcVHTuTkftAbweD0GsGGrDSYX8SHUc9xAiQOiixAGK0tmEX3hWusu72/WWRFvDLVCoSDj1Z/NMt/8icWiT17TvdjpynCdv6S4bhBjuXx6L2qRecSwjlWxZIZyPRr+g/naHnCHkUgEaEfIgdq37b96QGbyHWXpVO4n7JfNCdOyaXrbBvXPaWzYQaXdxA2BrA03dDQ1A6LAjUaEA6WB0puF82RRcI+8nllYRcUa4X34pgIzcj6XCuZW6G0P8bvIgxo+A6nbihgu9CqavJicOPg1eYuKyMsHwt/fB70NlCJg9v9ss+h31Mmbo0t86ZO21DwKS9mxgtyie9gKyUXb3RTzzdFMt7W3AtmR0rqeiSSJRRwQIktzXC27fyAPtsAMdfuaSdOI/wmHjzh7+uJlTYSF+Ip3dNaGOnPOzWpMdVxSflfG5zv6NRTNlkBitFlRow8UPf+tD5cNnD0naUaxc5ya00BYW7dy4EzHP20dbJ++a7i3qmMlH+nc6SKor6UTExXF2aJuDQGjRJ/lCem79X9LvrOfriDJMcnSn4bvsadYPIt1krKY+knSC03saFvYvJeHfovBn4ATW7ATZUVPIQUjvH3qZnOZO0ihmzxbieBTqNSqYXAtB4ZL2cCoA9sjdYMTO0t1XZFDzb4q/J549tsy9j38DS8LKw1DQiA8SDzjqlBNZaycOchPrQBQsq4Ai0sAk4pOuo9O1DEV0WwHyp6oLvO8AMnmQwQaluaQ1d6ITXK+13gCvGJRroeQNV5LPYozU/7ymuVSaK/cXaZyYPIvem1Yx7Yy4afTT612UQcTlaMjw21f9u8CWZdoTZfMXsknYUMlJU9RnoipCX053L3slQb5g6yXZoZNJi6Bk24VOdV3LaSWvqep5QUHFAKOeff0si0M2Id3DQfpnqiooaelzNjflQALVBw1+wWGjkmKdlru7sKaS+HZiS/WoRqu9xjytgtyH43MQvcZCJNpSjTPYfmnMyfx5EnRpqVgjOEa2Y5ZAO0eTI/DydGER2ZXKXgfzeUqn6Dop8kPTVolMZT2+6SERcUBVoZdR3BtueGqCGPcTLw0fw4sNsAb3BZkvZxWygkg+7D4CoGtCEv7PwqZLcSPidAD7Jmf6tgH3W2eX6xa6NQP08yvSv2nO2q2dUyQm5HDknj9hJZrBBOmM++V; path=/adfs; HttpOnly; Secure"], ["Location", "http://localhost:8081/"]],
+    "status_code": 302
+  }
+}

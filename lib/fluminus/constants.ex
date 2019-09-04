@@ -9,6 +9,9 @@ defmodule Fluminus.Constants do
   def auth_base_uri(:test), do: "http://localhost:8081"
   def auth_base_uri(_), do: "https://luminus.nus.edu.sg"
 
+  def vafs_uri(:test), do: "http://localhost:8081"
+  def vafs_uri(_), do: "https://vafs.nus.edu.sg/adfs/oauth2/authorize"
+
   def ets_cassettes_table_name(_), do: :cassettes
 
   def fixtures_path(_), do: "test/fixtures/"

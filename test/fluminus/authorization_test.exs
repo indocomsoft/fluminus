@@ -14,6 +14,12 @@ defmodule Fluminus.AuthorizationTest do
     assert(auth.client.cookies["idsrv"] == @idsrv)
   end
 
+  test "vafs_jwt happy path" do
+    {:ok, auth} = Authorization.vafs_jwt("e0123456", "hunter2")
+
+    assert auth.jwt == @id_token
+  end
+
   test "jwt invalid credential" do
     {:error, :invalid_credentials} = Authorization.jwt("e1234567", "wrongpassword")
   end

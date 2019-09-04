@@ -7,7 +7,7 @@
 
 If you are looking for the CLI tool, it has been refactored as a separate package: https://github.com/indocomsoft/fluminus_cli
 
-Since IVLE will be deprecated next academic year (AY2019/2020), while LumiNUS has consistently pushed back its schedule to release an API, I have decided to reverse-engineer the API used by the Angular front-end of LumiNUS.
+Since IVLE was deprecated on AY2019/2020, while LumiNUS had consistently pushed back its schedule to release an API, I have decided to reverse-engineer the API used by the Angular front-end of LumiNUS.
 
 > Recall all the posts that complained about how slow LumiNUS is? That’s an example of the difference between code that works and well-designed code that works efficiently.
 - A/P Ooi Wei Tsang, NUS School of Computing[^1]

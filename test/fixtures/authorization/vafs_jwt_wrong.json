@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "POST",
+    "body": {
+      "AuthMethod":"FormsAuthentication","Password":"wrongpassword","UserName":"e1234567"
+    },
+    "request_path": "/",
+    "cookies": {},
+    "query": {"client_id":"E10493A3B1024F14BDC7D0D8B9F649E9-234390","redirect_uri":"https://luminus.nus.edu.sg/auth/callback","resource":"sg_edu_nus_oauth","response_type":"code"}
+  },
+  "response": {
+    "body": "",
+    "headers": [],
+    "status_code": 200
+  }
+}

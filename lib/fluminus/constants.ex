@@ -6,9 +6,6 @@ defmodule Fluminus.Constants do
   def api_base_url(:test), do: "http://localhost:8082"
   def api_base_url(_), do: "https://luminus.nus.edu.sg/v2/api/"
 
-  def auth_base_uri(:test), do: "http://localhost:8081"
-  def auth_base_uri(_), do: "https://luminus.nus.edu.sg"
-
   def vafs_uri(:test), do: "http://localhost:8081"
   def vafs_uri(_), do: "https://vafs.nus.edu.sg/adfs/oauth2/authorize"
 

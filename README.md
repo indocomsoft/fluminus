@@ -42,7 +42,7 @@ dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:fluminus, "~> 1.4"}
+    {:fluminus, "~> 2.0"}
   ]
 end
 ```

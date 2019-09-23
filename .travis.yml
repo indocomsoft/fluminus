@@ -21,4 +21,4 @@ script:
   - mix coveralls.travis
   - mix credo
   - mix format --check-formatted
-  - mix dialyzer --halt-exit-status
+  - mix dialyzer

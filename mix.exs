@@ -54,7 +54,7 @@ defmodule Fluminus.MixProject do
       {:ffmpex, "~> 0.7.0"},
       {:floki, "~> 0.23.0"},
       {:html_entities, "~> 0.4"},
-      {:html_sanitize_ex, "~> 1.3.0"},
+      {:html_sanitize_ex, "~> 1.4.0"},
       {:httpoison, "~> 1.4"},
       {:jason, "~> 1.1"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},

@@ -58,7 +58,7 @@ defmodule Fluminus.MixProject do
       {:httpoison, "~> 1.4"},
       {:jason, "~> 1.1"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:credo, "~> 1.1.2", only: :test, runtime: false},
+      {:credo, "~> 1.2.1", only: :test, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:plug_cowboy, "~> 2.0", only: :test},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev, :test], runtime: false}

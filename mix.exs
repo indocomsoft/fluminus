@@ -52,7 +52,7 @@ defmodule Fluminus.MixProject do
     [
       {:cookie, "~> 0.1.1"},
       {:ffmpex, "~> 0.7.0"},
-      {:floki, "~> 0.25.0"},
+      {:floki, "~> 0.26.0"},
       {:html_entities, "~> 0.4"},
       {:html_sanitize_ex, "~> 1.4.0"},
       {:httpoison, "~> 1.4"},

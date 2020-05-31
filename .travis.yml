@@ -3,11 +3,11 @@ language: elixir
 sudo: false
 
 elixir:
-  - 1.9
+  - 1.10.3
 
 otp_release:
-  - 21.3
-  - 22.0
+  - '22.3'
+  - '23.0'
 
 cache:
   directories:

@@ -123,7 +123,7 @@ defmodule Fluminus.API do
         ]
       }
   """
-  @spec modules(Authorization.t()) :: {:ok, [Module.t()]} | {:error, any()}
+  @spec modules(Authorization.t(), boolean()) :: {:ok, [Module.t()]} | {:error, any()}
   def modules(auth = %Authorization{}, current_term_only \\ false) do
     case api(auth, "/module") do
       {:ok, %{"data" => data}} ->

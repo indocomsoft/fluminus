@@ -29,7 +29,7 @@ defmodule Fluminus.Authorization do
   end
 
   @doc """
-  Obtains the JWT from a `#{__MODULE__}` struct. Note that the JWT is valid only for 30 minutes.
+  Obtains the JWT from a `#{__MODULE__}` struct. Note that the JWT is valid only for 8 hours.
   """
   @spec get_jwt(__MODULE__.t()) :: String.t() | nil
   def get_jwt(%__MODULE__{jwt: jwt}), do: jwt
@@ -37,7 +37,7 @@ defmodule Fluminus.Authorization do
   @doc """
   Obtains a `#{__MODULE__}` struct containing JWT required for authorization and cookies to refresh JWT. It will be valid for 8 hours and is non-renewable (just like fossil fuels).
 
-  `username` is the username of your NUSNET account (in the format of e0123456).
+  `username` is the username of your NUSNET account (in the format of `nusstu\e0123456`).
   `password` is the password of your NUSNET account.
 
   ## Examples
@@ -48,6 +48,7 @@ defmodule Fluminus.Authorization do
            jwt: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSIsImtpZCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSJ9.eyJpc3MiOiJodHRwczovL2x1bWludXMubnVzLmVkdS5zZy92Mi9hdXRoIiwiYXVkIjoidmVyc28iLCJleHAiOjE1NTIwNDQxNjcsIm5iZiI6MTU1MjA0Mzg2Nywibm9uY2UiOiJiNjE4ZjE3NzQwYTJlOWM3YjQ2ZjlmMmZmODJiYWQ1YSIsImlhdCI6MTU1MjA0Mzg2NywiYXRfaGFzaCIaIlA5TTF4dU9fNVVrdklXNDdKUHhYYn9iLCJjX2hhc2giOiJzTVZMRVM42Us0VjFIaFlPZmUtenRnIiwic2lkIjoiOTVlNTJjZjI4OTMyNzMyZjRjZjIxMzAxZjQ3NTE3ODQiLCJzdWIiOiIwMzA4OTI1Mi0wYzk2LTRmYWItYjA4MC1mMmFlYjA3ZWVi2GYiLCJhdXRoX3RpbWUiOjE1NTIwNDM4NjcsImlkcCI6Ikakc3J2IiwiYWRkcmVzayI6IlJlcXVlc3QgYWxsIGNsYWltcyIsImFtciI6WyJwYXNzd29yZCJdfQ.ElRgTpfGJc3np4N37JZZFr_8ZXkuBYjw_vxFxt_GV311gGJlDnh9YDepzWnIsNgtgnuLlkHdb73q9mt2XIcn6YHL0r2kI-CbdKx57aaDfE3-tudRgEv8vXIh53q0Tt61OR5_86qB2qr3QQn0WFvC5VJMYfQ-MJevGrcKFe80vFQPihSHtpznD3G7SyczY3m1yRWsiHNgymvUc4LM5QETOHYv72jDfo7VcxFpscwr4o3os_9fYM_62WuRo7OOL3WdD2XAQB6NGaeakIOQwqMbDSMSvpc0McpGW4uljlmBTiRfzCn7i9bnbfkWLJ5C6mK2o2CWgp1rr2f-HZsIIe-w2Q"
         }}
   """
+  @spec vafs_jwt(String.t(), String.t()) :: {:ok, t()} | {:error, :invalid_credentials | :no_code_in_query | any()}
   def vafs_jwt(username, password) when is_binary(username) and is_binary(password) do
     query =
       URI.encode_query(%{

@@ -44,8 +44,8 @@ defmodule Fluminus.MixProject do
     ]
   end
 
-  def applications(:test), do: applications(:default) ++ [:cowboy, :plug]
-  def applications(_), do: [:httpoison, :telemetry]
+  def applications(:test), do: applications(:default) ++ [:cowboy, :plug, :telemetry]
+  def applications(_), do: [:httpoison]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do

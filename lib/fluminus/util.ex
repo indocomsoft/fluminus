@@ -40,7 +40,7 @@ defmodule Fluminus.Util do
       {_, cmd_args} =
         FFmpex.new_command()
         |> add_input_file(url)
-        |> add_output_file(destination <> if(String.ends_with?(destination, ".mp4"), do: "", else: ".mp4"))
+        |> add_output_file(destination)
         |> add_file_option(option_c("copy"))
         |> prepare()
 

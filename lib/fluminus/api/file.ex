@@ -190,7 +190,7 @@ defmodule Fluminus.API.File do
   defp parse_multimedia_child(_child = %{"id" => id, "name" => name}) do
     %__MODULE__{
       id: id,
-      name: Util.sanitise_filename(name),
+      name: Util.sanitise_filename(name) <> if(String.ends_with?(name, ".mp4"), do: "", else: ".mp4"),
       directory?: false,
       children: [],
       allow_upload?: false,

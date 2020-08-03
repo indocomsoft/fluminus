@@ -35,6 +35,10 @@ defmodule Fluminus.Util do
   @spec download_multimedia((() -> {:ok, String.t()} | {:error, :noffmpeg | any()}), Path.t(), bool()) ::
           :ok | {:error, :exists | any()}
   def download_multimedia(f, destination, verbose) when is_function(f) do
+    if not String.ends_with?(destination, ".mp4") do
+      destination = destination <> ".mp4"
+    end
+
     download_fn = fn url ->
       # FFMpex has a wrong spec: https://github.com/talklittle/ffmpex/pull/22
       {_, cmd_args} =

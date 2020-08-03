@@ -187,7 +187,7 @@ defmodule Fluminus.API.File do
     end
   end
 
-  defp parse_multimedia_child(child = %{"id" => id, "name" => name}) do
+  defp parse_multimedia_child(_child = %{"id" => id, "name" => name}) do
     %__MODULE__{
       id: id,
       name: Util.sanitise_filename(name),

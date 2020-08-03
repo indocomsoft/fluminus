@@ -120,12 +120,12 @@ defmodule Fluminus.API.Module do
     end
   end
 
-  def multimedias(module = %__Module__{id: id}, auth = %Authorization{}) do
+  def multimedias(_module = %__Module__{id: id}, auth = %Authorization{}) do
     uri = "/multimedia/?ParentId=#{id}"
 
     case API.api(auth, uri) do
       {:ok, %{"data" => data}} when is_list(data) ->
-        {:ok, Enum.map(data, &parse_multimedia(&1, auth))}
+        {:ok, Enum.map(data, &parse_multimedia/1)}
 
       {:ok, response} ->
         {:error, {:unexpected_response, response}}
@@ -135,7 +135,7 @@ defmodule Fluminus.API.Module do
     end
   end
 
-  defp parse_multimedia(api_response = %{"id" => id, "name" => name}, auth = %Authorization{}) do
+  defp parse_multimedia(api_response = %{"id" => id, "name" => name}) do
     base = %File{id: id, name: Util.sanitise_filename(name), allow_upload?: false, multimedia?: true}
 
     case api_response do

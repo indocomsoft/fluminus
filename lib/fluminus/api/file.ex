@@ -74,7 +74,7 @@ defmodule Fluminus.API.File do
   @doc """
   Loads the children of a given `#{__MODULE__}` struct.
   """
-  @spec load_children(__MODULE__.t(), Authorization.t()) :: {:ok, __MODULE__.t()} | :error
+  @spec load_children(__MODULE__.t(), Authorization.t()) :: {:ok, __MODULE__.t()} | {:error, :forbidden} | :error
   def load_children(
         file = %__MODULE__{id: id, directory?: true, children: nil, allow_upload?: allow_upload?, multimedia?: false},
         auth = %Authorization{}
@@ -91,6 +91,7 @@ defmodule Fluminus.API.File do
       ) do
     case get_multimedia_children(id, auth) do
       {:ok, children} -> {:ok, %__MODULE__{file | children: children}}
+      {:error, :forbidden} -> {:error, :forbidden}
       {:error, _} -> :error
     end
   end
@@ -181,6 +182,9 @@ defmodule Fluminus.API.File do
     case API.api(auth, uri) do
       {:ok, %{"data" => data}} when is_list(data) ->
         {:ok, Enum.map(data, &parse_multimedia_child/1)}
+
+      {:error, {:unexpected_content, %{status_code: 403}}} ->
+        {:error, :forbidden}
 
       response ->
         {:error, response}

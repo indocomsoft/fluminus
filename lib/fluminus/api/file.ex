@@ -76,10 +76,20 @@ defmodule Fluminus.API.File do
   """
   @spec load_children(__MODULE__.t(), Authorization.t()) :: {:ok, __MODULE__.t()} | :error
   def load_children(
-        file = %__MODULE__{id: id, directory?: true, children: nil, allow_upload?: allow_upload?},
+        file = %__MODULE__{id: id, directory?: true, children: nil, allow_upload?: allow_upload?, multimedia?: false},
         auth = %Authorization{}
       ) do
     case get_children(id, auth, allow_upload?) do
+      {:ok, children} -> {:ok, %__MODULE__{file | children: children}}
+      {:error, _} -> :error
+    end
+  end
+
+  def load_children(
+        file = %__MODULE__{id: id, directory?: true, children: nil, multimedia?: true},
+        auth = %Authorization{}
+      ) do
+    case get_multimedia_children(id, auth) do
       {:ok, children} -> {:ok, %__MODULE__{file | children: children}}
       {:error, _} -> :error
     end
@@ -162,6 +172,29 @@ defmodule Fluminus.API.File do
       children: if(directory?, do: nil, else: []),
       allow_upload?: if(child["allowUpload"], do: true, else: false),
       multimedia?: false
+    }
+  end
+
+  defp get_multimedia_children(id, auth = %Authorization{}) when is_binary(id) do
+    uri = "/multimedia/#{id}/medias"
+
+    case API.api(auth, uri) do
+      {:ok, %{"data" => data}} when is_list(data) ->
+        {:ok, Enum.map(data, &parse_multimedia_child/1)}
+
+      response ->
+        {:error, response}
+    end
+  end
+
+  defp parse_multimedia_child(child = %{"id" => id, "name" => name}) do
+    %__MODULE__{
+      id: id,
+      name: Util.sanitise_filename(name),
+      directory?: false,
+      children: [],
+      allow_upload?: false,
+      multimedia?: true
     }
   end
 end

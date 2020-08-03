@@ -12,7 +12,8 @@ defmodule Fluminus.API.Module do
   is invalid
   """
 
-  alias Fluminus.{API, Authorization}
+  alias Fluminus.{API, Authorization, Util}
+  alias Fluminus.API.File
   alias Fluminus.API.Module.{Lesson, Weblecture}
 
   @teacher_access ~w(access_Full access_Create access_Update access_Delete access_Settings_Read access_Settings_Update)
@@ -116,6 +117,30 @@ defmodule Fluminus.API.Module do
 
       {:error, error} ->
         {:error, error}
+    end
+  end
+
+  def multimedias(module = %__Module__{id: id}, auth = %Authorization{}) do
+    uri = "/multimedia/?ParentId=#{id}"
+
+    case API.api(auth, uri) do
+      {:ok, %{"data" => data}} when is_list(data) ->
+        {:ok, Enum.map(data, &parse_multimedia(&1, auth))}
+
+      {:ok, response} ->
+        {:error, {:unexpected_response, response}}
+
+      {:error, error} ->
+        {:error, error}
+    end
+  end
+
+  defp parse_multimedia(api_response = %{"id" => id, "name" => name}, auth = %Authorization{}) do
+    base = %File{id: id, name: Util.sanitise_filename(name), allow_upload?: false, multimedia?: true}
+
+    case api_response do
+      %{"duration" => _} -> %File{base | directory?: false, children: []}
+      _ -> %File{base | directory?: true, children: nil}
     end
   end
 end

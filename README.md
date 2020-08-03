@@ -31,7 +31,8 @@ Note that this is created through reverse-engineering LumiNUS's Angular Frontend
 - Get announcements
 - Get listing of workbin files and download them
 - Get listing of webcasts and download them
-- Get listing of weekly lesson plans and their associated files
+- Get listing of weekly lesson plans and their associated files, and download them
+- Get listing of multimedia files and download them
 
 ## Installation
 ### As a dependency

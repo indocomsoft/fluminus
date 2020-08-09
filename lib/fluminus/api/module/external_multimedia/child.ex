@@ -10,10 +10,12 @@ defmodule Fluminus.API.Module.ExternalMultimedia.Child do
 
   @type t :: %__MODULE__{name: String.t(), viewer_url: String.t(), client: HTTPClient.t()}
 
+  @spec from_api(any(), HTTPClient.t()) :: __MODULE__.t()
   def from_api(%{"ViewerUrl" => viewer_url, "SessionName" => name}, client) do
     %__MODULE__{viewer_url: viewer_url, name: name, client: client}
   end
 
+  @spec get_download_url(__MODULE__.t()) :: {:ok, String.t()} | {:error, any()}
   def get_download_url(%__MODULE__{viewer_url: viewer_url, client: client}) do
     with {:ok, client, _, %{status_code: 200, body: body}} <- HTTPClient.get(client, viewer_url),
          [{_, [_, {"content", video_url}], _}] <- Floki.find(body, "meta[property=\"og:video\"]"),
@@ -25,6 +27,7 @@ defmodule Fluminus.API.Module.ExternalMultimedia.Child do
     end
   end
 
+  @spec download(__MODULE__.t(), String.t(), bool()) :: :ok | {:error, :exists | any()}
   def download(child = %__MODULE__{name: name}, path, verbose) do
     destination = Path.join(path, Util.sanitise_filename(name) <> ".mp4")
     f = fn -> get_download_url(child) end

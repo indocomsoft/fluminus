@@ -10,10 +10,12 @@ defmodule Fluminus.API.Module.ExternalMultimedia do
   alias Fluminus.{API, Authorization, HTTPClient}
   alias Fluminus.API.Module.ExternalMultimedia.Child
 
+  @spec from_api(any()) :: __MODULE__.t()
   def from_api(%{"id" => id, "name" => name}) when is_binary(id) and is_binary(name) do
     %__MODULE__{id: id, name: name, children: nil}
   end
 
+  @spec get_children(__MODULE__.t(), Authorization.t()) :: {:ok, [Child.t()]} | {:error, any()}
   def get_children(%__MODULE__{id: id}, auth = %Authorization{}) do
     uri = "/lti/Launch/mediaweb?context_id=#{id}"
 

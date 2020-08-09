@@ -120,6 +120,7 @@ defmodule Fluminus.API.Module do
     end
   end
 
+  @spec multimedias(__MODULE__.t(), Authorization.t()) :: {:ok, [File.t()]} | {:error, any()}
   def multimedias(_module = %__MODULE__{id: id}, auth = %Authorization{}) do
     uri = "/multimedia/?ParentId=#{id}"
 
@@ -149,6 +150,7 @@ defmodule Fluminus.API.Module do
     end
   end
 
+  @spec external_multimedias(__MODULE__.t(), Authorization.t()) :: {:ok, [ExternalMultimedia.t()]} | {:error, any()}
   def external_multimedias(_module = %__MODULE__{id: id}, auth = %Authorization{}) do
     uri = "/multimedia/?ParentId=#{id}"
 

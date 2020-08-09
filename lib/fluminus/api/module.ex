@@ -120,7 +120,7 @@ defmodule Fluminus.API.Module do
     end
   end
 
-  def multimedias(_module = %__Module__{id: id}, auth = %Authorization{}) do
+  def multimedias(_module = %__MODULE__{id: id}, auth = %Authorization{}) do
     uri = "/multimedia/?ParentId=#{id}"
 
     case API.api(auth, uri) do

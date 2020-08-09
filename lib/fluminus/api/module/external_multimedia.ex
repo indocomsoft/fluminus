@@ -35,7 +35,7 @@ defmodule Fluminus.API.Module.ExternalMultimedia do
     end
   end
 
-  @spec do_get_children(String.t(), map()) :: {:ok, String.t()} | {:error, any()}
+  @spec do_get_children(String.t(), map()) :: {:ok, [Child.t()]} | {:error, any()}
   defp do_get_children(launch_url, data_items)
        when is_binary(launch_url) and is_map(data_items) do
     body = URI.encode_query(data_items)

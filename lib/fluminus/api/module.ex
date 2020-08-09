@@ -14,7 +14,7 @@ defmodule Fluminus.API.Module do
 
   alias Fluminus.{API, Authorization, Util}
   alias Fluminus.API.File
-  alias Fluminus.API.Module.{Lesson, Weblecture}
+  alias Fluminus.API.Module.{ExternalMultimedia, Lesson, Weblecture}
 
   @teacher_access ~w(access_Full access_Create access_Update access_Delete access_Settings_Read access_Settings_Update)
 
@@ -125,7 +125,12 @@ defmodule Fluminus.API.Module do
 
     case API.api(auth, uri) do
       {:ok, %{"data" => data}} when is_list(data) ->
-        {:ok, Enum.map(data, &parse_multimedia/1)}
+        result =
+          data
+          |> Enum.filter(&(not Map.get(&1, "isExternalTool")))
+          |> Enum.map(&parse_multimedia/1)
+
+        {:ok, result}
 
       {:ok, response} ->
         {:error, {:unexpected_response, response}}
@@ -135,12 +140,32 @@ defmodule Fluminus.API.Module do
     end
   end
 
-  defp parse_multimedia(api_response = %{"id" => id, "name" => name}) do
+  defp parse_multimedia(api_response = %{"id" => id, "name" => name, "isExternalTool" => false}) do
     base = %File{id: id, name: Util.sanitise_filename(name), allow_upload?: false, multimedia?: true}
 
     case api_response do
       %{"duration" => _} -> %File{base | directory?: false, children: []}
       _ -> %File{base | directory?: true, children: nil}
+    end
+  end
+
+  def external_multimedias(_module = %__MODULE__{id: id}, auth = %Authorization{}) do
+    uri = "/multimedia/?ParentId=#{id}"
+
+    case API.api(auth, uri) do
+      {:ok, %{"data" => data}} when is_list(data) ->
+        result =
+          data
+          |> Enum.filter(&Map.get(&1, "isExternalTool"))
+          |> Enum.map(&ExternalMultimedia.from_api/1)
+
+        {:ok, result}
+
+      {:ok, response} ->
+        {:error, {:unexpected_response, response}}
+
+      {:error, error} ->
+        {:error, error}
     end
   end
 end

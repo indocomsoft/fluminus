@@ -10,7 +10,7 @@ defmodule Fluminus.API.Module.ExternalMultimedia do
   alias Fluminus.{API, Authorization, HTTPClient}
   alias Fluminus.API.Module.ExternalMultimedia.Child
 
-  @spec from_api(any()) :: __MODULE__.t()
+  @spec from_api(map()) :: __MODULE__.t()
   def from_api(%{"id" => id, "name" => name}) when is_binary(id) and is_binary(name) do
     %__MODULE__{id: id, name: name, children: nil}
   end

@@ -27,7 +27,8 @@ defmodule Fluminus.MixProject do
       ],
       dialyzer: [
         plt_add_apps: [:cookie, :floki, :jason, :html_entities, :html_sanitize_ex, :ffmpex],
-        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
+        flags: [:error_handling, :race_conditions, :underspecs, :unmatched_returns]
       ]
     ]
   end

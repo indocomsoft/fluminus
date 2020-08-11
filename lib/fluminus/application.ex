@@ -26,7 +26,7 @@ defmodule Fluminus.Application do
   end
 
   defp load_ets do
-    :ets.new(@ets_cassettes_table_name, [:named_table])
+    @ets_cassettes_table_name = :ets.new(@ets_cassettes_table_name, [:named_table])
     :ets.insert(@ets_cassettes_table_name, {Fluminus.MockAPIServer, load_cassettes("api")})
     :ets.insert(@ets_cassettes_table_name, {Fluminus.MockAuthorizationServer, load_cassettes("authorization")})
   end

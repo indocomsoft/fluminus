@@ -98,16 +98,16 @@ defmodule Fluminus.HTTPClient do
   defp download_loop(response = %HTTPoison.AsyncResponse{id: id}, file, verbose, counter \\ 0) do
     receive do
       %HTTPoison.AsyncStatus{code: 200, id: ^id} ->
-        HTTPoison.stream_next(response)
+        {:ok, _} = HTTPoison.stream_next(response)
         download_loop(response, file, verbose, counter)
 
       %HTTPoison.AsyncHeaders{id: ^id} ->
-        HTTPoison.stream_next(response)
+        {:ok, _} = HTTPoison.stream_next(response)
         download_loop(response, file, verbose, counter)
 
       %HTTPoison.AsyncChunk{chunk: chunk, id: ^id} ->
-        IO.binwrite(file, chunk)
-        HTTPoison.stream_next(response)
+        :ok = IO.binwrite(file, chunk)
+        {:ok, _} = HTTPoison.stream_next(response)
 
         if counter >= @verbose_download_size do
           if verbose, do: IO.write(".")

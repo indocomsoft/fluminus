@@ -115,7 +115,8 @@ defmodule Fluminus.API.File do
     uri = "/multimedia/media/#{id}"
 
     case API.api(auth, uri) do
-      {:ok, %{"streamUrlPath" => m3u8}} -> {:ok, m3u8}
+      {:ok, %{"streamUrlPath" => ""}} -> {:error, :processing}
+      {:ok, %{"streamUrlPath" => m3u8}} when is_binary(m3u8) -> {:ok, m3u8}
       {:ok, response} -> {:error, {:unexpected_response, response}}
       {:error, error} -> {:error, error}
     end

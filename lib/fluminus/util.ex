@@ -32,7 +32,7 @@ defmodule Fluminus.Util do
     download_wrapper(f, download_fn, destination)
   end
 
-  @spec download_multimedia((() -> {:ok, String.t()} | {:error, :noffmpeg | any()}), Path.t(), bool()) ::
+  @spec download_multimedia((() -> {:ok, String.t()} | {:error, :noffmpeg | :processing | any()}), Path.t(), bool()) ::
           :ok | {:error, :exists | any()}
   def download_multimedia(f, destination, verbose) when is_function(f) do
     download_fn = fn url ->

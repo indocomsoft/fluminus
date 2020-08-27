@@ -42,6 +42,7 @@ defmodule Fluminus.Util do
         |> add_input_file(url)
         |> add_output_file(destination)
         |> add_file_option(option_c("copy"))
+        |> add_global_option(option_n())
         |> prepare()
 
       output = if verbose, do: IO.stream(:stdio, :line), else: ""

@@ -56,7 +56,8 @@ defmodule Fluminus.API.Module.Weblecture do
            HTTPClient.post(%HTTPClient{}, launch_url, body),
          {:ok, client, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, location),
          {:ok, client, _, %{status_code: 200, body: body}} <- HTTPClient.get(client, location),
-         {:floki, [{_, [_, {"content", video_url}], _}]} <- {:floki, Floki.find(body, "meta[property=\"og:video\"]")},
+         {:floki, {:ok, parsed}} <- {:floki, Floki.parse_fragment(body)},
+         {:floki, [{_, [_, {"content", video_url}], _}]} <- {:floki, Floki.find(parsed, "meta[property=\"og:video\"]")},
          {:ok, _, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, video_url) do
       {:ok, location}
     else

@@ -18,7 +18,8 @@ defmodule Fluminus.API.Module.ExternalMultimedia.Child do
   @spec get_download_url(__MODULE__.t()) :: {:ok, String.t()} | {:error, any()}
   def get_download_url(%__MODULE__{viewer_url: viewer_url, client: client}) do
     with {:ok, client, _, %{status_code: 200, body: body}} <- HTTPClient.get(client, viewer_url),
-         [{_, [_, {"content", video_url}], _}] <- Floki.find(body, "meta[property=\"og:video\"]"),
+         {:ok, parsed} <- Floki.parse_fragment(body),
+         [{_, [_, {"content", video_url}], _}] <- Floki.find(parsed, "meta[property=\"og:video\"]"),
          {:ok, _, %{"location" => location}, %{status_code: 302}} <- HTTPClient.get(client, video_url) do
       {:ok, location}
     else

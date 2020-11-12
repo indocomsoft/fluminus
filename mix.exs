@@ -4,7 +4,7 @@ defmodule Fluminus.MixProject do
   def project do
     [
       app: :fluminus,
-      version: "2.2.6",
+      version: "2.2.7",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -26,7 +26,6 @@ defmodule Fluminus.MixProject do
         "coveralls.html": :test
       ],
       dialyzer: [
-        plt_add_apps: [:cookie, :floki, :jason, :html_entities, :html_sanitize_ex, :ffmpex],
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
         flags: [:error_handling, :race_conditions, :underspecs, :unmatched_returns]
       ]

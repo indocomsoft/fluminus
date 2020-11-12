@@ -40,13 +40,9 @@ defmodule Fluminus.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Fluminus.Application, [env: Mix.env()]},
-      applications: applications(Mix.env())
+      mod: {Fluminus.Application, [env: Mix.env()]}
     ]
   end
-
-  def applications(:test), do: applications(:default) ++ [:cowboy, :plug, :telemetry]
-  def applications(_), do: [:httpoison]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do

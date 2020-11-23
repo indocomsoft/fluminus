@@ -34,7 +34,7 @@ jobs:
           _build
           deps
           priv/plts
-        key: ${{ runner.os }}-mix-%{{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('**/mix.lock') }}
+        key: ${{ runner.os }}-mix-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('**/mix.lock') }}
         restore-keys: ${{ runner.os }}-mix-${{ matrix.otp }}-${{ matrix.elixir }}-
     - name: Install dependencies
       run: |

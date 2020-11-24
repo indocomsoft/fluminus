@@ -13,7 +13,6 @@ jobs:
 
     env:
       MIX_ENV: test
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     strategy:
       matrix:
@@ -48,5 +47,7 @@ jobs:
       run: mix credo
     - name: Run tests
       run: mix coveralls.github
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Run dialyzer
       run: mix dialyzer

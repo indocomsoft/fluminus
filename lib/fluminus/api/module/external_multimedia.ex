@@ -15,6 +15,9 @@ defmodule Fluminus.API.Module.ExternalMultimedia do
     %__MODULE__{id: id, name: name, children: nil}
   end
 
+  @doc """
+  Loads the children of a given `#{__MODULE__}` struct.
+  """
   @spec get_children(__MODULE__.t(), Authorization.t()) :: {:ok, [Child.t()]} | {:error, any()}
   def get_children(%__MODULE__{id: id}, auth = %Authorization{}) do
     uri = "/lti/Launch/mediaweb?context_id=#{id}"

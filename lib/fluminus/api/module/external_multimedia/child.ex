@@ -15,6 +15,9 @@ defmodule Fluminus.API.Module.ExternalMultimedia.Child do
     %__MODULE__{viewer_url: viewer_url, name: name, client: client}
   end
 
+  @doc """
+  Obtains the download url for a given file in an external multimedia channel's child.
+  """
   @spec get_download_url(__MODULE__.t()) :: {:ok, String.t()} | {:error, any()}
   def get_download_url(%__MODULE__{viewer_url: viewer_url, client: client}) do
     with {:ok, client, _, %{status_code: 200, body: body}} <- HTTPClient.get(client, viewer_url),
@@ -28,6 +31,12 @@ defmodule Fluminus.API.Module.ExternalMultimedia.Child do
     end
   end
 
+  @doc """
+  Downloads the given file in an external multinedia channel's child to the location specified
+  by `path`.
+
+  This function will return `{:error, :exists}` if the file already exists in the given `path`
+  """
   @spec download(__MODULE__.t(), String.t(), bool()) :: :ok | {:error, :exists | any()}
   def download(child = %__MODULE__{name: name}, path, verbose) do
     destination = Path.join(path, Util.sanitise_filename(name) <> ".mp4")

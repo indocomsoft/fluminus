@@ -61,7 +61,7 @@ defmodule Fluminus.HTTPClient do
       when method in @supported_methods and is_binary(url) and is_binary(body) and is_list(headers) do
     headers = generate_headers(client, headers)
 
-    case HTTPoison.request(method, url, body, headers, recv_timeout: 10_000) do
+    case HTTPoison.request(method, url, body, headers, recv_timeout: 10_000, hackney: [:insecure]) do
       {:ok, response = %HTTPoison.Response{headers: headers}} ->
         updated_client = update_cookies(client, response)
         flattened_headers = headers |> Enum.map(fn {key, value} -> {String.downcase(key), value} end) |> Map.new()

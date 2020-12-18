@@ -52,6 +52,7 @@ defmodule Fluminus.MixProject do
       {:html_entities, "~> 0.4"},
       {:html_sanitize_ex, "~> 1.4.0"},
       {:httpoison, "~> 1.4"},
+      {:certifi, "~> 2.5"},
       {:jason, "~> 1.1"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:credo, "~> 1.5.0", only: :test, runtime: false},

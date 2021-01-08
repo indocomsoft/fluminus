@@ -84,7 +84,8 @@ defmodule Fluminus.HTTPClient do
 
     with {:overwrite?, true} <- {:overwrite?, overwrite or not File.exists?(destination)},
          {:ok, file} <- File.open(destination, [:write]),
-         {:ok, response} = HTTPoison.get(url, headers, stream_to: self(), async: :once),
+         {:ok, response} =
+           HTTPoison.get(url, headers, stream_to: self(), async: :once, ssl: [cacerts: :certifi.cacerts()]),
          :ok <- download_loop(response, file, verbose),
          :ok <- File.close(file) do
       :ok
